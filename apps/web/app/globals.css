@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "@geaklabs/ui/styles/brand.css";
+
+/* Scan the shared UI package for Tailwind classes */
+@source "../../../../packages/ui/src";
+
+/* Web-only refinements */
+@layer base {
+  a {
+    text-underline-offset: 0.2em;
+  }
+}

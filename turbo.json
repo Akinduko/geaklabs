@@ -1,0 +1,31 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "globalDependencies": [".env"],
+  "globalEnv": [
+    "DATABASE_URL",
+    "AUTH_SECRET",
+    "AUTH_URL",
+    "BLOB_READ_WRITE_TOKEN",
+    "NEXT_PUBLIC_SITE_URL",
+    "NEXT_PUBLIC_CONTACT_EMAIL",
+    "NEXT_PUBLIC_LINKEDIN_URL",
+    "NEXT_PUBLIC_GITHUB_URL"
+  ],
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    }
+  }
+}

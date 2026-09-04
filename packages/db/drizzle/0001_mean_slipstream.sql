@@ -1,0 +1,1 @@
+ALTER TABLE "experiences" ADD COLUMN "status" "content_status" DEFAULT 'draft' NOT NULL;

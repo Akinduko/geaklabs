@@ -1,0 +1,28 @@
+{
+  "name": "geaklabs",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.20.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "pnpm --filter @geaklabs/db generate",
+    "db:migrate": "pnpm --filter @geaklabs/db migrate",
+    "db:push": "pnpm --filter @geaklabs/db push",
+    "db:seed": "pnpm --filter @geaklabs/db seed",
+    "db:studio": "pnpm --filter @geaklabs/db studio"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "turbo": "^2.5.5",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp", "unrs-resolver"]
+  }
+}

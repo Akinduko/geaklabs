@@ -1,0 +1,122 @@
+/*
+ * GEAK LABS — brand theme (Tailwind v4).
+ * Ink on a warm-neutral ground. Instrument Serif for display, Schibsted Grotesk for everything read;
+ * the mint→cyan gradient is spent once per page.
+ * Imported by each app after `@import "tailwindcss";`.
+ */
+
+@theme {
+  /* ---- Core palette (from brand guideline) ---- */
+  /* Warm-neutral page ground; pure white is kept for surfaces that need it */
+  --color-paper: #f6f6f4;
+  --color-paper-warm: #f6f6f4;
+  --color-white: #ffffff;
+  /* Hairlines */
+  --color-rule: #d6d6d2;
+  --color-ink: #1c1c1c;
+
+  /* Ink tints for editorial hierarchy (derived, warm-neutral) */
+  --color-ink-900: #1c1c1c;
+  --color-ink-700: #3a3a3a;
+  --color-ink-500: #6b6b6b;
+  --color-ink-400: #8a8a8a;
+  --color-ink-300: #b4b4b4;
+  --color-ink-200: #d8d8d8;
+  --color-ink-100: #ececec;
+  --color-ink-50: #f6f6f5;
+
+  /* Signature gradient stops */
+  --color-mint: #7fffc4;
+  --color-cyan: #0bb8fc;
+  /* Darkened cyan for text/links on light grounds — the brand cyan fails WCAG AA on white */
+  --color-cyan-ink: #0b7ba8;
+
+  /* ---- Type ---- */
+  --font-display: var(--font-schibsted), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-schibsted), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-instrument-serif), "Times New Roman", Times, serif;
+
+  /* Editorial reading measure */
+  --spacing-measure: 68ch;
+
+  /* Motion */
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- Base element styling ---- */
+@layer base {
+  :root {
+    --brand-gradient: linear-gradient(105deg, var(--color-mint) 0%, var(--color-cyan) 100%);
+    --brand-gradient-soft: linear-gradient(
+      105deg,
+      color-mix(in oklab, var(--color-mint) 22%, transparent) 0%,
+      color-mix(in oklab, var(--color-cyan) 22%, transparent) 100%
+    );
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "calt";
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  /* Keyboard focus — visible for keyboard users, silent for pointer users */
+  :focus-visible {
+    outline: 2px solid var(--color-cyan-ink);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  ::selection {
+    background: var(--color-mint);
+    color: var(--color-ink);
+  }
+}
+
+/* ---- Reusable brand utilities ---- */
+@utility gradient-text {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility gradient-bg {
+  background: var(--brand-gradient);
+}
+
+/* Tracked all-caps kicker used on category labels (HBR-style) */
+@utility kicker {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Long-form article prose */
+@utility prose-editorial {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--color-ink-900);
+  max-width: var(--spacing-measure);
+}
