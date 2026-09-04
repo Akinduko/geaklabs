@@ -14,6 +14,10 @@ export async function generateMetadata(): Promise<Metadata> {
     template: "%s · GEAK LABS",
   },
   description: copy["meta.description"],
+  alternates: {
+    canonical: "/",
+    types: { "application/rss+xml": [{ url: "/rss.xml", title: "GEAK LABS" }] },
+  },
   keywords: ["AI", "AI strategy", "AI governance", "AI adoption", "process automation", "leadership", "management", "technology", "GEAK LABS"],
   authors: [{ name: "Olugbenga Akinduko" }],
   openGraph: {
@@ -21,7 +25,12 @@ export async function generateMetadata(): Promise<Metadata> {
     siteName: "GEAK LABS",
     url: SITE_URL,
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", creator: "@geaklabs" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
   icons: {
     icon: [{ url: "/brand/favicon.ico" }, { url: "/icon.svg", type: "image/svg+xml" }],
   },

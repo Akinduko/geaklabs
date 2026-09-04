@@ -7,6 +7,7 @@ import { ProjectTable } from "../_components/project-table";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/work" },
   title: "Work",
   description: "Selected projects and products.",
 };

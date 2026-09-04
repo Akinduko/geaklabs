@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { Container } from "@geaklabs/ui";
 import { getProjectBySlug, getProjects } from "@geaklabs/db";
 import { sanitizeArticleHtml } from "@/lib/sanitize";
+import { JsonLd } from "../../_components/json-ld";
+import { projectJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -22,6 +24,14 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: project.title,
     description: project.summary ?? undefined,
+    alternates: { canonical: `/work/${slug}` },
+    openGraph: {
+      title: project.title,
+      description: project.summary ?? undefined,
+      type: "article",
+      url: `/work/${slug}`,
+      images: [project.coverImageUrl ?? "/opengraph-image"],
+    },
   };
 }
 
@@ -32,6 +42,14 @@ export default async function ProjectPage({ params }: Params) {
 
   return (
     <article className="pb-20">
+      <JsonLd data={projectJsonLd(project)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/work" },
+          { name: project.title, path: `/work/${project.slug}` },
+        ])}
+      />
       <Container size="wide">
         <div className="pt-14">
           <Link href="/work" className="text-sm text-ink-500 transition-colors hover:text-cyan-ink">

@@ -7,6 +7,8 @@ import { getPostBySlug, getPostsByCategory } from "@geaklabs/db";
 import { ArticleCard } from "../../_components/article-card";
 import { formatDate } from "@/lib/format";
 import { sanitizeArticleHtml } from "@/lib/sanitize";
+import { JsonLd } from "../../_components/json-ld";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -19,11 +21,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
+    alternates: { canonical: `/articles/${slug}` },
+    authors: [{ name: "Olugbenga Akinduko" }],
     openGraph: {
       title: post.title,
       description: post.excerpt ?? undefined,
       type: "article",
-      images: post.coverImageUrl ? [post.coverImageUrl] : undefined,
+      url: `/articles/${slug}`,
+      publishedTime: post.publishedAt ? new Date(post.publishedAt).toISOString() : undefined,
+      authors: ["Olugbenga Akinduko"],
+      section: post.category?.name,
+      images: [post.coverImageUrl ?? "/opengraph-image"],
     },
   };
 }
@@ -39,6 +47,14 @@ export default async function ArticlePage({ params }: Params) {
 
   return (
     <article className="pb-8">
+      <JsonLd data={articleJsonLd({ ...post, categoryName: post.category?.name ?? null })} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Writing", path: "/articles" },
+          { name: post.title, path: `/articles/${post.slug}` },
+        ])}
+      />
       {/* Article header */}
       <Container size="prose">
         <div className="pt-14">

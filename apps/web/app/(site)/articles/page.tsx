@@ -6,6 +6,7 @@ import { ArticleCard } from "../_components/article-card";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/articles" },
   title: "Writing",
   description: "Essays on leadership, management, and technology.",
 };

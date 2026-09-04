@@ -6,6 +6,7 @@ import { formatMonthYear } from "@/lib/format";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About",
   description: "About Olugbenga Akinduko and GEAK LABS.",
 };

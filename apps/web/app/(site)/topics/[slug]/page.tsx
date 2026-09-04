@@ -17,7 +17,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategoryBySlug(slug);
   if (!category) return { title: "Topic" };
-  return { title: category.name, description: category.description ?? undefined };
+  return {
+    title: category.name,
+    description: category.description ?? undefined,
+    alternates: { canonical: `/topics/${slug}` },
+  };
 }
 
 export default async function TopicPage({ params }: Params) {

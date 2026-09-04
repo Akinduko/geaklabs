@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@geaklabs/ui";
 import { getPublishedPosts, getProjects, getServices, getSiteCopy, copyLines } from "@geaklabs/db";
 import { ProjectTable } from "./_components/project-table";
+import { JsonLd } from "./_components/json-ld";
+import { siteJsonLd } from "@/lib/seo";
 
 export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await getSiteCopy();
+  return {
+    title: { absolute: copy["meta.title"] },
+    description: copy["meta.description"],
+    alternates: { canonical: "/" },
+  };
+}
 
 export default async function HomePage() {
   const [posts, projects, services, copy] = await Promise.all([
@@ -18,6 +30,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={siteJsonLd(copy, services)} />
       {/* Hero — the one place the serif and the gradient are spent */}
       <section className="border-b border-rule">
         <Container size="wide">
