@@ -113,6 +113,7 @@ export const subscribers = pgTable("subscribers", {
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
 export type Category = typeof categories.$inferSelect;
+export type NewCategory = typeof categories.$inferInsert;
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 export type Experience = typeof experiences.$inferSelect;

@@ -16,6 +16,7 @@ export type {
   Post,
   NewPost,
   Category,
+  NewCategory,
   Project,
   NewProject,
   Experience,

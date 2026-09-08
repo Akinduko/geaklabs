@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
-import { db, posts, projects, experiences, services, siteCopy, SITE_COPY_FIELDS } from "@geaklabs/db";
+import { eq, sql } from "drizzle-orm";
+import { db, posts, projects, experiences, services, siteCopy, categories, SITE_COPY_FIELDS } from "@geaklabs/db";
 import { auth } from "@/auth";
 import { slugify, readingMinutes, parseList } from "./helpers";
 import { revalidateWeb } from "./revalidate-web";
@@ -194,4 +194,76 @@ export async function saveSiteCopy(fd: FormData) {
   revalidatePath("/copy");
   await revalidateWeb(["/", "/about", "/work", "/articles"]);
   redirect("/copy?saved=1");
+}
+
+/* --------------------------- Categories --------------------------- */
+
+export async function saveCategory(id: string | null, fd: FormData) {
+  await requireAuth();
+
+  const name = str(fd, "name");
+  const slug = str(fd, "slug") || slugify(name);
+
+  const values = {
+    name,
+    slug,
+    description: str(fd, "description") || null,
+    sortOrder: Number(str(fd, "sortOrder")) || 0,
+  };
+
+  // Slugs are unique: block a clash rather than letting the insert throw.
+  const [clash] = await db
+    .select({ id: categories.id })
+    .from(categories)
+    .where(eq(categories.slug, slug))
+    .limit(1);
+  if (clash && clash.id !== id) {
+    redirect(`/categories${id ? `/${id}` : "/new"}?error=slug`);
+  }
+
+  if (id) {
+    await db.update(categories).set(values).where(eq(categories.id, id));
+  } else {
+    await db.insert(categories).values(values);
+  }
+
+  revalidatePath("/categories");
+  revalidatePath("/posts");
+  await revalidateWeb(["/", "/articles", `/topics/${slug}`]);
+  redirect("/categories");
+}
+
+/**
+ * Deleting a category would set category_id to NULL on any post using it
+ * (the FK is ON DELETE SET NULL), silently un-categorising published posts.
+ * So refuse the delete while posts still reference it and report the count.
+ */
+export async function deleteCategory(id: string) {
+  await requireAuth();
+
+  const [usage] = await db
+    .select({ n: sql<number>`count(*)`.mapWith(Number) })
+    .from(posts)
+    .where(eq(posts.categoryId, id));
+  const n = usage?.n ?? 0;
+
+  if (n > 0) {
+    return {
+      ok: false as const,
+      message: `This category is used by ${n} post${n === 1 ? "" : "s"}. Reassign ${n === 1 ? "it" : "them"} before deleting it.`,
+    };
+  }
+
+  const [row] = await db
+    .select({ slug: categories.slug })
+    .from(categories)
+    .where(eq(categories.id, id))
+    .limit(1);
+
+  await db.delete(categories).where(eq(categories.id, id));
+
+  revalidatePath("/categories");
+  revalidatePath("/posts");
+  await revalidateWeb(["/", "/articles", ...(row ? [`/topics/${row.slug}`] : [])]);
+  return { ok: true as const };
 }

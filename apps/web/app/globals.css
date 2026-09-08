@@ -2,7 +2,8 @@
 @import "@geaklabs/ui/styles/brand.css";
 
 /* Scan the shared UI package for Tailwind classes */
-@source "../../../../packages/ui/src";
+@source "../../../packages/ui/src";
+
 
 /* Web-only refinements */
 @layer base {
