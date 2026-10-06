@@ -38,7 +38,7 @@ export const SITE_COPY_FIELDS = [
     label: "Headline",
     kind: "textarea",
     hint: "One line per row. The full stop is added automatically.",
-    default: "I build systems\nthat scale",
+    default: "I build things\nthat hold",
   },
   {
     key: "hero.subline",
@@ -69,7 +69,7 @@ export const SITE_COPY_FIELDS = [
     label: "“Open to” list",
     kind: "lines",
     hint: "One item per line. Leave empty to hide the block.",
-    default: "Advisory\nEngineering leadership\nInteresting problems",
+    default: "",
   },
 
   // ---- Home: sections ----
