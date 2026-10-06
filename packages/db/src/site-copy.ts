@@ -180,7 +180,7 @@ export const SITE_COPY_FIELDS = [
   },
 
   // ---- Footer / contact ----
-  { key: "footer.cta", group: "Footer", label: "Call to action", kind: "text", default: "Let's build something." },
+  { key: "footer.cta", group: "Footer", label: "Call to action", kind: "text", default: "Let’s talk." },
   { key: "footer.email", group: "Footer", label: "Contact email", kind: "text", hint: "Leave empty to hide.", default: "" },
   { key: "footer.linkedin", group: "Footer", label: "LinkedIn URL", kind: "text", hint: "Leave empty to hide.", default: "" },
   { key: "footer.github", group: "Footer", label: "GitHub URL", kind: "text", hint: "Leave empty to hide.", default: "" },
