@@ -11,6 +11,7 @@ import {
   services,
   siteCopy,
   categories,
+  series,
   SITE_COPY_FIELDS,
   CONTENT_SECTIONS,
   type ContentSection,
@@ -51,6 +52,8 @@ export async function savePost(id: string | null, fd: FormData) {
   const status = bool(fd, "published") ? "published" : "draft";
   const postSection = section(fd);
   const categoryId = str(fd, "categoryId") || null;
+  const seriesId = str(fd, "seriesId") || null;
+  const seriesPart = seriesId ? Number(str(fd, "seriesPart")) || null : null;
 
   // A topic belongs to one section; refuse to file a post under a topic from the other side.
   // The form already hides mismatched topics, so this only catches a stale or hand-edited submit.
@@ -85,6 +88,8 @@ export async function savePost(id: string | null, fd: FormData) {
     coverImageAlt: str(fd, "coverImageAlt") || null,
     categoryId,
     section: postSection,
+    seriesId,
+    seriesPart,
     tags: parseList(fd.get("tags")),
     status: status as "draft" | "published",
     featured: bool(fd, "featured"),
@@ -106,6 +111,11 @@ export async function savePost(id: string | null, fd: FormData) {
     paths.add(`${sectionPaths(existing.section)[0]}/${existing.slug}`);
   }
   if (categorySlug) paths.add(`/topics/${categorySlug}`);
+  if (seriesId) {
+    const [s] = await db.select({ slug: series.slug }).from(series).where(eq(series.id, seriesId)).limit(1);
+    paths.add("/series");
+    if (s) paths.add(`/series/${s.slug}`);
+  }
 
   revalidatePath("/posts");
   await revalidateWeb([...paths]);
@@ -214,6 +224,7 @@ export async function saveService(id: string | null, fd: FormData) {
   const values = {
     title: str(fd, "title"),
     body: str(fd, "body") || null,
+    section: section(fd),
     sortOrder: Number(str(fd, "sortOrder")) || 0,
     status: (bool(fd, "published") ? "published" : "draft") as "draft" | "published",
     updatedAt: new Date(),
@@ -326,5 +337,61 @@ export async function deleteCategory(id: string) {
   revalidatePath("/categories");
   revalidatePath("/posts");
   await revalidateWeb(["/", "/articles", "/faith", ...(row ? [`/topics/${row.slug}`] : [])]);
+  return { ok: true as const };
+}
+
+/* ----------------------------- Series ----------------------------- */
+
+export async function saveSeries(id: string | null, fd: FormData) {
+  await requireAuth();
+
+  const name = str(fd, "name");
+  const slug = str(fd, "slug") || slugify(name);
+  const values = {
+    name,
+    slug,
+    description: str(fd, "description") || null,
+    sortOrder: Number(str(fd, "sortOrder")) || 0,
+  };
+
+  const [clash] = await db.select({ id: series.id }).from(series).where(eq(series.slug, slug)).limit(1);
+  if (clash && clash.id !== id) {
+    redirect(`/series${id ? `/${id}` : "/new"}?error=slug`);
+  }
+
+  if (id) {
+    await db.update(series).set(values).where(eq(series.id, id));
+  } else {
+    await db.insert(series).values(values);
+  }
+
+  revalidatePath("/series");
+  revalidatePath("/posts");
+  await revalidateWeb(["/series", `/series/${slug}`]);
+  redirect("/series");
+}
+
+/** Refuse to delete a series that still has parts, so no post silently loses its place. */
+export async function deleteSeries(id: string) {
+  await requireAuth();
+
+  const [usage] = await db
+    .select({ n: sql<number>`count(*)`.mapWith(Number) })
+    .from(posts)
+    .where(eq(posts.seriesId, id));
+  const n = usage?.n ?? 0;
+  if (n > 0) {
+    return {
+      ok: false as const,
+      message: `This series has ${n} part${n === 1 ? "" : "s"}. Remove ${n === 1 ? "it" : "them"} from the series before deleting it.`,
+    };
+  }
+
+  const [row] = await db.select({ slug: series.slug }).from(series).where(eq(series.id, id)).limit(1);
+  await db.delete(series).where(eq(series.id, id));
+
+  revalidatePath("/series");
+  revalidatePath("/posts");
+  await revalidateWeb(["/series", ...(row ? [`/series/${row.slug}`] : [])]);
   return { ok: true as const };
 }

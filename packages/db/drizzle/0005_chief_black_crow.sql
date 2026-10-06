@@ -1,0 +1,1 @@
+ALTER TABLE "services" ADD COLUMN "section" "content_section" DEFAULT 'professional' NOT NULL;

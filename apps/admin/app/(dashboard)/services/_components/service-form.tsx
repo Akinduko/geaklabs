@@ -29,6 +29,16 @@ export function ServiceForm({
         />
       </Field>
 
+      <Field label="Group">
+        <select name="section" defaultValue={service?.section ?? "professional"} className="input">
+          <option value="professional">What I do (professional)</option>
+          <option value="faith">In faith</option>
+        </select>
+      </Field>
+      <p className="-mt-3 font-display text-xs text-ink-400">
+        Professional items sit under “What I do”; faith items form the “In faith” group beneath it.
+      </p>
+
       <div className="grid gap-6 sm:grid-cols-2">
         <Field label="Sort order (lower = first)">
           <input

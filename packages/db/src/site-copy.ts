@@ -87,6 +87,14 @@ export const SITE_COPY_FIELDS = [
     default: "Notes from building, leading and learning.",
   },
   {
+    key: "faith.servicesHeading",
+    group: "Home — sections",
+    label: "“In faith” heading",
+    kind: "text",
+    hint: "Heads the faith items under “What I do”. The group only shows when a faith item is published.",
+    default: "Serving, learning, writing it down.",
+  },
+  {
     key: "faith.heading",
     group: "Home — sections",
     label: "Faith heading",
@@ -177,6 +185,16 @@ export const SITE_COPY_FIELDS = [
     label: "RSS feed title",
     kind: "text",
     default: "GEAK LABS — Faith",
+  },
+
+  // ---- Series ----
+  {
+    key: "series.intro",
+    group: "Series page",
+    label: "Introduction under “Series”",
+    kind: "textarea",
+    default:
+      "Longer threads written in parts — reflections and lessons from work and from faith, read in order.",
   },
 
   // ---- Footer / contact ----

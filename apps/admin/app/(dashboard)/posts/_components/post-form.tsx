@@ -13,11 +13,13 @@ const SECTION_LABELS: Record<ContentSection, string> = {
 export function PostForm({
   post,
   categories,
+  allSeries,
   action,
   error,
 }: {
   post?: Post;
   categories: Category[];
+  allSeries: { id: string; name: string }[];
   action: (fd: FormData) => void;
   error?: string;
 }) {
@@ -85,6 +87,29 @@ export function PostForm({
               </option>
             ))}
           </select>
+        </Field>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field label="Series (optional)">
+          <select name="seriesId" defaultValue={post?.seriesId ?? ""} className="input">
+            <option value="">— none —</option>
+            {allSeries.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Part number in the series">
+          <input
+            name="seriesPart"
+            type="number"
+            min={1}
+            defaultValue={post?.seriesPart ?? ""}
+            className="input"
+            placeholder="1"
+          />
         </Field>
       </div>
 

@@ -16,6 +16,8 @@ export async function SiteFooter() {
       links: [
         { href: "/articles", label: "Notes" },
         { href: "/faith", label: faith },
+        { href: "/series", label: "Series" },
+        { href: "/work", label: "Work" },
         { href: "/about", label: "About" },
       ],
     },

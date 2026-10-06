@@ -42,6 +42,19 @@ export const categories = pgTable("categories", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+/**
+ * A series threads posts from either section into an ordered sequence (e.g. a memoir).
+ * Posts keep their own section; the series only supplies the order and a contents page.
+ */
+export const series = pgTable("series", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: varchar("name", { length: 120 }).notNull(),
+  slug: varchar("slug", { length: 120 }).notNull().unique(),
+  description: text("description"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 /** Posts: professional notes and faith writing. Body stored as TipTap JSON. */
 export const posts = pgTable(
   "posts",
@@ -57,6 +70,8 @@ export const posts = pgTable(
     categoryId: uuid("category_id").references(() => categories.id, { onDelete: "set null" }),
     tags: text("tags").array().notNull().default([]),
     section: contentSection("section").notNull().default("professional"),
+    seriesId: uuid("series_id").references(() => series.id, { onDelete: "set null" }),
+    seriesPart: integer("series_part"),
     status: contentStatus("status").notNull().default("draft"),
     featured: boolean("featured").notNull().default(false),
     readingMinutes: integer("reading_minutes").notNull().default(1),
@@ -68,6 +83,7 @@ export const posts = pgTable(
     index("posts_status_idx").on(t.status),
     index("posts_category_idx").on(t.categoryId),
     index("posts_section_idx").on(t.section),
+    index("posts_series_idx").on(t.seriesId),
     index("posts_published_idx").on(t.publishedAt),
   ],
 );
@@ -124,6 +140,8 @@ export const subscribers = pgTable("subscribers", {
 
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
+export type Series = typeof series.$inferSelect;
+export type NewSeries = typeof series.$inferInsert;
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
 export type Project = typeof projects.$inferSelect;
@@ -136,6 +154,7 @@ export const services = pgTable("services", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: varchar("title", { length: 160 }).notNull(),
   body: text("body"),
+  section: contentSection("section").notNull().default("professional"),
   sortOrder: integer("sort_order").notNull().default(0),
   status: contentStatus("status").notNull().default("draft"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

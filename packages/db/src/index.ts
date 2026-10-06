@@ -4,6 +4,7 @@ export * as schema from "./schema";
 export {
   posts,
   categories,
+  series,
   projects,
   experiences,
   services,
@@ -20,6 +21,8 @@ export type {
   NewPost,
   Category,
   NewCategory,
+  Series,
+  NewSeries,
   Project,
   NewProject,
   Experience,

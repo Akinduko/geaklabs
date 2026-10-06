@@ -1,4 +1,4 @@
-import { getAllCategories } from "@geaklabs/db";
+import { getAllCategories, getAllSeries } from "@geaklabs/db";
 import { savePost } from "@/lib/actions";
 import { PostForm } from "../_components/post-form";
 
@@ -9,7 +9,7 @@ export default async function NewPostPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const [{ error }, categories] = await Promise.all([searchParams, getAllCategories()]);
+  const [{ error }, categories, allSeries] = await Promise.all([searchParams, getAllCategories(), getAllSeries()]);
   const action = savePost.bind(null, null);
 
   return (
@@ -17,7 +17,7 @@ export default async function NewPostPage({
       <h1 className="font-display text-2xl font-semibold text-ink-900">New post</h1>
       <p className="mt-1 font-serif text-ink-500">Write a note, or a faith post.</p>
       <div className="mt-8">
-        <PostForm categories={categories} action={action} error={error} />
+        <PostForm categories={categories} allSeries={allSeries} action={action} error={error} />
       </div>
     </div>
   );

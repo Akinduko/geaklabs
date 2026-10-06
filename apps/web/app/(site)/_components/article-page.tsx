@@ -9,6 +9,7 @@ import {
   getPostBySlug,
   getPostsByCategory,
   getPublishedPosts,
+  getSeriesParts,
   type ContentSection,
 } from "@geaklabs/db";
 import { ArticleCard } from "./article-card";
@@ -59,14 +60,18 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
   if (post.section !== section) permanentRedirect(postHref(post));
 
   const home = SECTIONS[section];
-  const [related, siblings] = await Promise.all([
+  const [related, siblings, parts] = await Promise.all([
     post.category
       ? getPostsByCategory(post.category.slug, 4).then((rows) =>
           rows.filter((p) => p.slug !== post.slug).slice(0, 3),
         )
       : Promise.resolve([]),
     getPublishedPosts(100, section),
+    post.series ? getSeriesParts(post.series.id) : Promise.resolve([]),
   ]);
+  const partIndex = parts.findIndex((p) => p.slug === post.slug);
+  const prevPart = partIndex > 0 ? parts[partIndex - 1] : null;
+  const nextPart = partIndex >= 0 ? (parts[partIndex + 1] ?? null) : null;
   // "Next" is the post published just before this one; the newest post points at the one after it.
   const at = siblings.findIndex((p) => p.slug === post.slug);
   const next = at === -1 ? null : (siblings[at + 1] ?? siblings[at - 1] ?? null);
@@ -105,6 +110,21 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
           <h1 className="mt-5 font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.95] tracking-[-0.03em] text-ink-900">
             {post.title}
           </h1>
+          {post.series && (
+            <p className="mt-5 text-sm text-ink-500">
+              <Link href={`/series/${post.series.slug}`} className="font-medium text-ink-900 transition-colors hover:text-cyan-ink">
+                {post.series.name}
+              </Link>
+              {partIndex >= 0 && (
+                <>
+                  <span className="mx-2" aria-hidden>
+                    —
+                  </span>
+                  Part {post.seriesPart ?? partIndex + 1} of {parts.length}
+                </>
+              )}
+            </p>
+          )}
           {post.excerpt && (
             <p className="mt-7 text-xl leading-[1.5] text-ink-700">{post.excerpt}</p>
           )}
@@ -124,8 +144,34 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
         />
       </Container>
 
+      {/* Series navigation replaces the generic Next teaser for a post in a series */}
+      {post.series && (prevPart || nextPart) && (
+        <Container size="wide">
+          <section className="mt-20 border-t border-ink-900 pt-8">
+            <span className="kicker text-ink-500">{post.series.name}</span>
+            <div className="mt-6 grid gap-8 pb-12 sm:grid-cols-2">
+              {[
+                { label: "Previous part", part: prevPart },
+                { label: "Next part", part: nextPart },
+              ].map(({ label, part }) =>
+                part ? (
+                  <Link key={label} href={postHref(part)} className="group flex flex-col">
+                    <span className="text-sm text-ink-500">{label}</span>
+                    <span className="mt-2 font-serif text-[clamp(1.6rem,2.6vw,2.25rem)] leading-[1.05] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
+                      {part.title}
+                    </span>
+                  </Link>
+                ) : (
+                  <span key={label} />
+                ),
+              )}
+            </div>
+          </section>
+        </Container>
+      )}
+
       {/* Next */}
-      {next && (
+      {!post.series && next && (
         <Container size="wide">
           <section className="mt-20 border-t border-ink-900 pt-8">
             <span className="kicker text-ink-500">Next</span>

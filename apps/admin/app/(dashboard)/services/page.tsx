@@ -7,7 +7,7 @@ import { deleteService } from "@/lib/actions";
 export const dynamic = "force-dynamic";
 
 export default async function ServicesPage() {
-  const rows = await db.select().from(services).orderBy(asc(services.sortOrder));
+  const rows = await db.select().from(services).orderBy(asc(services.section), asc(services.sortOrder));
 
   return (
     <div>
@@ -46,6 +46,7 @@ export default async function ServicesPage() {
                 </Link>
                 {s.body && <p className="mt-0.5 truncate font-serif text-sm text-ink-500">{s.body}</p>}
                 <p className="mt-1 font-display text-xs text-ink-400">
+                  {s.section === "faith" ? "In faith" : "What I do"} ·{" "}
                   {s.status === "published" ? "Shown on the site" : "Hidden"} · order {s.sortOrder}
                 </p>
               </div>

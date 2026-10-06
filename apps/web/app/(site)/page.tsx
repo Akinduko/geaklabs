@@ -40,6 +40,8 @@ export default async function HomePage() {
     getSiteCopy(),
   ]);
   const headline = copyLines(copy["hero.headline"]);
+  const work = services.filter((s) => s.section !== "faith");
+  const faithServices = services.filter((s) => s.section === "faith");
   const verse = copy["hero.verse"].trim();
 
   return (
@@ -98,33 +100,21 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* What I do — edited in the admin */}
-      {services.length > 0 && (
+      {/* What I do — two groups, both edited in the admin */}
+      {(work.length > 0 || faithServices.length > 0) && (
         <section className="border-b border-rule">
           <Container size="wide">
-            <div className="grid gap-10 py-20 lg:grid-cols-12 lg:gap-6">
-              <div className="lg:col-span-4">
-                <span className="kicker text-ink-500">What I do</span>
-                <h2 className="mt-5 max-w-[360px] text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-ink-900 sm:text-[40px]">
-                  {copy["services.heading"]}
-                </h2>
-              </div>
-              <ul className="border-b border-ink-900 lg:col-span-7 lg:col-start-6">
-                {services.map((item) => (
-                  <li
-                    key={item.id}
-                    className="grid gap-1.5 border-t border-rule py-5 lg:grid-cols-[264px_1fr] lg:gap-6"
-                  >
-                    <span className="text-xl font-medium leading-tight tracking-[-0.02em] text-ink-900">
-                      {item.title}
-                    </span>
-                    {item.body && (
-                      <span className="text-[15px] leading-normal text-ink-700">{item.body}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {work.length > 0 && (
+              <ServiceGroup kicker="What I do" heading={copy["services.heading"]} items={work} />
+            )}
+            {faithServices.length > 0 && (
+              <ServiceGroup
+                kicker="In faith"
+                heading={copy["faith.servicesHeading"]}
+                items={faithServices}
+                className={work.length > 0 ? "border-t border-rule" : undefined}
+              />
+            )}
           </Container>
         </section>
       )}
@@ -199,5 +189,41 @@ export default async function HomePage() {
         </section>
       )}
     </>
+  );
+}
+
+function ServiceGroup({
+  kicker,
+  heading,
+  items,
+  className,
+}: {
+  kicker: string;
+  heading: string;
+  items: { id: string; title: string; body: string | null }[];
+  className?: string;
+}) {
+  return (
+    <div className={`grid gap-10 py-20 lg:grid-cols-12 lg:gap-6 ${className ?? ""}`}>
+      <div className="lg:col-span-4">
+        <span className="kicker text-ink-500">{kicker}</span>
+        <h2 className="mt-5 max-w-[360px] text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-ink-900 sm:text-[40px]">
+          {heading}
+        </h2>
+      </div>
+      <ul className="border-b border-ink-900 lg:col-span-7 lg:col-start-6">
+        {items.map((item) => (
+          <li
+            key={item.id}
+            className="grid gap-1.5 border-t border-rule py-5 lg:grid-cols-[264px_1fr] lg:gap-6"
+          >
+            <span className="text-xl font-medium leading-tight tracking-[-0.02em] text-ink-900">
+              {item.title}
+            </span>
+            {item.body && <span className="text-[15px] leading-normal text-ink-700">{item.body}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

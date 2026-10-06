@@ -36,6 +36,20 @@
       "when": 1791317909887,
       "tag": "0004_cultured_stature",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791324555916,
+      "tag": "0005_chief_black_crow",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791324731497,
+      "tag": "0006_chief_smasher",
+      "breakpoints": true
     }
   ]
 }

@@ -5,9 +5,9 @@ import { getSiteCopy } from "@geaklabs/db";
 export async function SiteHeader() {
   const copy = await getSiteCopy();
   const nav = [
-    { href: "/work", label: "Work" },
     { href: "/articles", label: "Notes" },
     { href: "/faith", label: copy["nav.faith"] || "Faith" },
+    { href: "/series", label: "Series" },
     { href: "/about", label: "About" },
   ];
 

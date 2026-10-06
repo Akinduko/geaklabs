@@ -1,4 +1,4 @@
-import { getPublishedPosts, getProjects, getServices, getSiteCopy } from "@geaklabs/db";
+import { getPublishedPosts, getProjects, getServices, getSiteCopy, getAllSeries } from "@geaklabs/db";
 import { postHref } from "@/lib/sections";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -10,12 +10,14 @@ export const revalidate = 3600;
  * Convention: https://llmstxt.org
  */
 export async function GET() {
-  const [copy, services, projects, posts] = await Promise.all([
+  const [copy, services, projects, posts, allSeries] = await Promise.all([
     getSiteCopy(),
     getServices(),
     getProjects(),
     getPublishedPosts(100),
+    getAllSeries(),
   ]);
+  const seriesList = allSeries.filter((s) => s.partCount > 0);
 
   const listPosts = (section: "professional" | "faith") =>
     posts
@@ -59,12 +61,17 @@ ${copy["faith.intro"]}
 
 ${listPosts("faith") || "_Nothing published yet._"}
 
+${seriesList.length > 0 ? `## Series
+
+${seriesList.map((s) => `- [${s.name}](${SITE_URL}/series/${s.slug})${s.description ? `: ${s.description}` : ""} (${s.partCount} parts)`).join("\n")}
+` : ""}
 ## Pages
 
 - [Home](${SITE_URL}/): overview, what he does, recent notes and faith writing
 - [Work](${SITE_URL}/work): every published project
 - [Notes](${SITE_URL}/articles): every published professional note
 - [Faith](${SITE_URL}/faith): every published faith article
+- [Series](${SITE_URL}/series): longer threads read in order, from both sections
 - [About](${SITE_URL}/about): background and experience
 - [RSS feed — professional](${SITE_URL}/rss.xml)
 - [RSS feed — faith](${SITE_URL}/faith/rss.xml)

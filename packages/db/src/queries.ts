@@ -1,6 +1,6 @@
 import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "./client";
-import { posts, categories, projects, experiences, services, siteCopy } from "./schema";
+import { posts, categories, series, projects, experiences, services, siteCopy } from "./schema";
 import type { ContentSection } from "./schema";
 import { SITE_COPY_DEFAULTS, type SiteCopy } from "./site-copy";
 
@@ -65,10 +65,56 @@ export async function getPostBySlug(slug: string) {
     .select()
     .from(posts)
     .leftJoin(categories, eq(posts.categoryId, categories.id))
+    .leftJoin(series, eq(posts.seriesId, series.id))
     .where(eq(posts.slug, slug))
     .limit(1);
   if (!row) return null;
-  return { ...row.posts, category: row.categories };
+  return { ...row.posts, category: row.categories, series: row.series };
+}
+
+/** Every series in sort order, with how many published parts each has. */
+export async function getAllSeries() {
+  return db
+    .select({
+      id: series.id,
+      name: series.name,
+      slug: series.slug,
+      description: series.description,
+      sortOrder: series.sortOrder,
+      partCount: sql<number>`count(${posts.id}) filter (where ${posts.status} = 'published')`.mapWith(Number),
+    })
+    .from(series)
+    .leftJoin(posts, eq(posts.seriesId, series.id))
+    .groupBy(series.id)
+    .orderBy(series.sortOrder, series.name);
+}
+
+export async function getSeriesBySlug(slug: string) {
+  const [row] = await db.select().from(series).where(eq(series.slug, slug)).limit(1);
+  return row ?? null;
+}
+
+/** Published parts of a series in reading order (part number, then publish date). */
+export async function getSeriesParts(seriesId: string) {
+  return db
+    .select({
+      id: posts.id,
+      title: posts.title,
+      slug: posts.slug,
+      excerpt: posts.excerpt,
+      coverImageUrl: posts.coverImageUrl,
+      coverImageAlt: posts.coverImageAlt,
+      readingMinutes: posts.readingMinutes,
+      publishedAt: posts.publishedAt,
+      section: posts.section,
+      seriesPart: posts.seriesPart,
+      categoryName: categories.name,
+      categorySlug: categories.slug,
+    })
+    .from(posts)
+    .leftJoin(categories, eq(posts.categoryId, categories.id))
+    .where(and(eq(posts.status, "published"), eq(posts.seriesId, seriesId)))
+    .orderBy(posts.seriesPart, posts.publishedAt);
 }
 
 export async function getPostsByCategory(categorySlug: string, limit?: number) {
