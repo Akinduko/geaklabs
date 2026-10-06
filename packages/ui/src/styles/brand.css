@@ -120,8 +120,9 @@
   color: var(--color-ink-900);
   max-width: var(--spacing-measure);
 
-  /* Opening paragraph takes a serif drop cap in the cyan ink. */
-  & > p:first-child::first-letter {
+  /* Opening paragraph takes a serif drop cap in the cyan ink (also after an opening epigraph). */
+  & > p:first-child::first-letter,
+  & > blockquote:first-child + p::first-letter {
     float: left;
     margin-right: 0.08em;
     padding-top: 0.08em;
