@@ -120,6 +120,34 @@
   color: var(--color-ink-900);
   max-width: var(--spacing-measure);
 
+  /* Opening paragraph takes a serif drop cap in the cyan ink. */
+  & > p:first-child::first-letter {
+    float: left;
+    margin-right: 0.08em;
+    padding-top: 0.08em;
+    font-family: var(--font-serif);
+    font-size: 4.4em;
+    line-height: 0.78;
+    color: var(--color-cyan-ink);
+  }
+
+  /* Pull quotes: the server marks up to two long, fully-bold paragraphs with .pull. */
+  & > p.pull {
+    margin: 2.75rem 0;
+    padding: 1.5rem 0 1.625rem;
+    border-top: 1px solid var(--color-ink-900);
+    border-bottom: 1px solid var(--color-rule);
+    font-family: var(--font-serif);
+    font-size: 1.9rem;
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    color: var(--color-ink-900);
+  }
+  & > p.pull strong {
+    font-weight: 400;
+    color: inherit;
+  }
+
   /* Quotations (scripture, citations) step into the serif so they read as a different voice. */
   & blockquote {
     margin: 2rem 0;

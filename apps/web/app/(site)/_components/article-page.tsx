@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Container } from "@geaklabs/ui";
-import { getPostBySlug, getPostsByCategory, type ContentSection } from "@geaklabs/db";
+import {
+  getPostBySlug,
+  getPostsByCategory,
+  getPublishedPosts,
+  type ContentSection,
+} from "@geaklabs/db";
 import { ArticleCard } from "./article-card";
+import { ArticleCover } from "./article-cover";
 import { JsonLd } from "./json-ld";
 import { formatDate } from "@/lib/format";
-import { sanitizeArticleHtml } from "@/lib/sanitize";
+import { sanitizeArticleHtml, decorateArticleHtml } from "@/lib/sanitize";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { SECTIONS, postHref } from "@/lib/sections";
 
@@ -51,9 +59,18 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
   if (post.section !== section) permanentRedirect(postHref(post));
 
   const home = SECTIONS[section];
-  const related = post.category
-    ? (await getPostsByCategory(post.category.slug, 4)).filter((p) => p.slug !== post.slug).slice(0, 3)
-    : [];
+  const [related, siblings] = await Promise.all([
+    post.category
+      ? getPostsByCategory(post.category.slug, 4).then((rows) =>
+          rows.filter((p) => p.slug !== post.slug).slice(0, 3),
+        )
+      : Promise.resolve([]),
+    getPublishedPosts(100, section),
+  ]);
+  // "Next" is the post published just before this one; the newest post points at the one after it.
+  const at = siblings.findIndex((p) => p.slug === post.slug);
+  const next = at === -1 ? null : (siblings[at + 1] ?? siblings[at - 1] ?? null);
+  const body = decorateArticleHtml(sanitizeArticleHtml(post.contentHtml ?? ""));
 
   return (
     <article className="pb-8">
@@ -65,9 +82,19 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
           { name: post.title, path: postHref(post) },
         ])}
       />
+      {/* Cover — uploaded photo or generated art, full width */}
+      <Container size="wide">
+        <ArticleCover
+          post={post}
+          priority
+          sizes="(max-width: 1440px) 100vw, 1440px"
+          className="mt-6 aspect-[4/3] sm:aspect-[21/9]"
+        />
+      </Container>
+
       {/* Article header */}
       <Container size="prose">
-        <div className="pt-14">
+        <div className="pt-12">
           {post.category ? (
             <Link href={`/topics/${post.category.slug}`} className="kicker text-ink-500">
               {post.category.name}
@@ -81,13 +108,7 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
           {post.excerpt && (
             <p className="mt-7 text-xl leading-[1.5] text-ink-700">{post.excerpt}</p>
           )}
-          <div className="mt-7 flex items-center gap-3 text-sm text-ink-500">
-            <span>Olugbenga Akinduko</span>
-            <span aria-hidden>·</span>
-            <span>{formatDate(post.publishedAt)}</span>
-            <span aria-hidden>·</span>
-            <span>{post.readingMinutes} min read</span>
-          </div>
+          <Byline publishedAt={post.publishedAt} readingMinutes={post.readingMinutes} />
         </div>
       </Container>
 
@@ -95,34 +116,45 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
         <div className="mt-10 border-b border-ink-900" />
       </Container>
 
-      {/* Cover */}
-      {post.coverImageUrl && (
-        <Container size="default">
-          <div className="relative mt-10 aspect-[16/9] overflow-hidden bg-ink-100">
-            <Image
-              src={post.coverImageUrl}
-              alt={post.coverImageAlt ?? post.title}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 1024px"
-              className="object-cover"
-            />
-          </div>
-        </Container>
-      )}
-
       {/* Body */}
       <Container size="prose">
         <div
           className="prose-editorial mt-12 [&_a]:text-cyan-ink [&_a]:underline [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-ink-900 [&_p]:mt-6"
-          dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(post.contentHtml ?? "") }}
+          dangerouslySetInnerHTML={{ __html: body }}
         />
       </Container>
+
+      {/* Next */}
+      {next && (
+        <Container size="wide">
+          <section className="mt-20 border-t border-ink-900 pt-8">
+            <span className="kicker text-ink-500">Next</span>
+            <Link href={postHref(next)} className="group mt-6 grid gap-6 pb-12 sm:grid-cols-12">
+              <ArticleCover
+                post={next}
+                sizes="(max-width: 640px) 100vw, 33vw"
+                className="aspect-[4/3] sm:col-span-4"
+              />
+              <div className="sm:col-span-7 sm:col-start-6 sm:self-center">
+                {next.categoryName && <span className="kicker text-ink-500">{next.categoryName}</span>}
+                <span className="mt-3 block font-serif text-[clamp(1.75rem,3vw,2.75rem)] leading-[1.02] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
+                  {next.title}
+                </span>
+                {next.excerpt && (
+                  <span className="mt-3 block max-w-[52ch] text-base leading-[1.5] text-ink-700">
+                    {next.excerpt}
+                  </span>
+                )}
+              </div>
+            </Link>
+          </section>
+        </Container>
+      )}
 
       {/* Related */}
       {related.length > 0 && (
         <Container size="wide">
-          <section className="mt-20 border-t border-ink-900 py-12">
+          <section className="border-t border-rule py-12">
             <span className="kicker text-ink-500">More in {post.category?.name}</span>
             <div className="mt-8 grid gap-x-8 gap-y-12 sm:grid-cols-3">
               {related.map((r) => (
@@ -133,5 +165,49 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
         </Container>
       )}
     </article>
+  );
+}
+
+/** Author block: the photo at public/brand/author.jpg if present, otherwise a monogram. */
+const AUTHOR_PHOTO = existsSync(join(process.cwd(), "public", "brand", "author.jpg"))
+  ? "/brand/author.jpg"
+  : null;
+
+function Byline({
+  publishedAt,
+  readingMinutes,
+}: {
+  publishedAt: Date | string | null;
+  readingMinutes: number;
+}) {
+  return (
+    <div className="mt-8 flex items-center gap-4">
+      {AUTHOR_PHOTO ? (
+        <Image
+          src={AUTHOR_PHOTO}
+          alt=""
+          width={48}
+          height={48}
+          className="h-12 w-12 rounded-full object-cover"
+        />
+      ) : (
+        <span
+          aria-hidden
+          className="flex h-12 w-12 items-center justify-center rounded-full gradient-bg font-display text-sm font-semibold tracking-[0.04em] text-ink-900"
+        >
+          OA
+        </span>
+      )}
+      <div className="flex flex-col text-sm leading-snug">
+        <span className="font-medium text-ink-900">Olugbenga Akinduko</span>
+        <span className="text-ink-500">
+          {formatDate(publishedAt)}
+          <span className="mx-2" aria-hidden>
+            —
+          </span>
+          {readingMinutes} min read
+        </span>
+      </div>
+    </div>
   );
 }

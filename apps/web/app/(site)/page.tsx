@@ -3,13 +3,11 @@ import Link from "next/link";
 import { Container } from "@geaklabs/ui";
 import {
   getPublishedPosts,
-  getProjects,
   getServices,
   getSiteCopy,
   getAllCategories,
   copyLines,
 } from "@geaklabs/db";
-import { ProjectTable } from "./_components/project-table";
 import { JsonLd } from "./_components/json-ld";
 import { siteJsonLd } from "@/lib/seo";
 import { postHref } from "@/lib/sections";
@@ -34,11 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [posts, faithPosts, faithTopics, projects, services, copy] = await Promise.all([
+  const [posts, faithPosts, faithTopics, services, copy] = await Promise.all([
     getPublishedPosts(4, "professional"),
     getPublishedPosts(3, "faith"),
     getAllCategories("faith"),
-    getProjects(),
     getServices(),
     getSiteCopy(),
   ]);
@@ -135,15 +132,6 @@ export default async function HomePage() {
                 ))}
               </ul>
             </div>
-          </Container>
-        </section>
-      )}
-
-      {/* Selected work */}
-      {projects.length > 0 && (
-        <section>
-          <Container size="wide">
-            <ProjectTable projects={projects} />
           </Container>
         </section>
       )}

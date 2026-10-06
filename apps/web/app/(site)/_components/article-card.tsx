@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { ContentSection } from "@geaklabs/db";
 import { formatDate } from "@/lib/format";
 import { postHref } from "@/lib/sections";
+import { ArticleCover } from "./article-cover";
 
 export type ArticleCardData = {
   slug: string;
@@ -20,18 +20,12 @@ export function ArticleCard({ post, priority }: { post: ArticleCardData; priorit
   return (
     <article className="group flex flex-col">
       <Link href={postHref(post)} className="flex flex-col">
-        {post.coverImageUrl && (
-          <div className="relative mb-5 aspect-[16/10] overflow-hidden bg-ink-100">
-            <Image
-              src={post.coverImageUrl}
-              alt={post.title}
-              fill
-              priority={priority}
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover"
-            />
-          </div>
-        )}
+        <ArticleCover
+          post={post}
+          priority={priority}
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="mb-5 aspect-[16/10]"
+        />
         {post.categoryName && <span className="kicker text-ink-500">{post.categoryName}</span>}
         <h3 className="mt-2.5 text-2xl font-medium leading-[1.2] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
           {post.title}

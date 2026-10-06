@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Container } from "@geaklabs/ui";
 import { getCategoryBySlug, getPostsByCategory, getAllCategories } from "@geaklabs/db";
 import { ArticleCard } from "../../_components/article-card";
+import { ArticleLead } from "../../_components/article-lead";
 import { SECTIONS } from "@/lib/sections";
 
 export const revalidate = 60;
@@ -58,11 +59,16 @@ export default async function TopicPage({ params }: Params) {
             Nothing in {category.name} yet.
           </p>
         ) : (
-          <div className="grid gap-x-8 gap-y-14 border-t border-ink-900 py-14 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post, i) => (
-              <ArticleCard key={post.slug} post={post} priority={i < 3} />
-            ))}
-          </div>
+          <>
+            {posts[0] && <ArticleLead post={posts[0]} />}
+            {posts.length > 1 && (
+              <div className="grid gap-x-8 gap-y-14 border-t border-rule py-14 sm:grid-cols-2 lg:grid-cols-3">
+                {posts.slice(1).map((post, i) => (
+                  <ArticleCard key={post.slug} post={post} priority={i < 2} />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </Container>
     </>

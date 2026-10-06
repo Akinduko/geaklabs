@@ -95,6 +95,19 @@ export function PostForm({
       <Field label="Cover image">
         <ImageUpload name="coverImageUrl" value={coverUrl} onChange={setCoverUrl} />
       </Field>
+      <p className="-mt-3 font-display text-xs text-ink-400">
+        Optional. Posts without a cover get generated artwork on the site.
+      </p>
+      {coverUrl && (
+        <Field label="Cover image description (alt text)">
+          <input
+            name="coverImageAlt"
+            defaultValue={post?.coverImageAlt ?? ""}
+            className="input"
+            placeholder="What the picture shows, for screen readers and search"
+          />
+        </Field>
+      )}
 
       <Field label="Body">
         <RichEditor name="contentHtml" initialHtml={post?.contentHtml ?? ""} />
