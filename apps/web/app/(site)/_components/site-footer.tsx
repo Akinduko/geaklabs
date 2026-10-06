@@ -29,7 +29,7 @@ export async function SiteFooter() {
           <div className="flex flex-col gap-1.5 text-sm lg:col-span-3 lg:col-start-10 lg:text-right">
             {linkedin && <FooterLink href={linkedin} external>LinkedIn</FooterLink>}
             {github && <FooterLink href={github} external>GitHub</FooterLink>}
-            <FooterLink href="/articles">All essays</FooterLink>
+            <FooterLink href="/articles">All notes</FooterLink>
             <FooterLink href="/faith">{copy["nav.faith"] || "Faith"}</FooterLink>
             <FooterLink href="/rss.xml">RSS</FooterLink>
             <FooterLink href="/faith/rss.xml">{copy["nav.faith"] || "Faith"} RSS</FooterLink>

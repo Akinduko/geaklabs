@@ -14,7 +14,7 @@ import {
 export const contentStatus = pgEnum("content_status", ["draft", "published"]);
 
 /**
- * Which side of the site a post (or category) belongs to. Professional essays live
+ * Which side of the site a post (or category) belongs to. Professional notes live
  * under /articles; faith writing under /faith. Set on the post itself so a post can
  * never leak into the wrong feed just because it has no category.
  */
@@ -42,7 +42,7 @@ export const categories = pgTable("categories", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
-/** Blog posts / essays. Body stored as TipTap JSON. */
+/** Posts: professional notes and faith writing. Body stored as TipTap JSON. */
 export const posts = pgTable(
   "posts",
   {

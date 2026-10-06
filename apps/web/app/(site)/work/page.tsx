@@ -45,7 +45,7 @@ export default async function WorkPage() {
                   href="/articles"
                   className="text-ink-900 underline decoration-ink-300 underline-offset-4 transition-colors hover:decoration-cyan-ink"
                 >
-                  Read the essays
+                  Read the notes
                 </Link>
               </p>
             )}

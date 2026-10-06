@@ -49,7 +49,7 @@ ${projects
 
 ## Professional writing
 
-Essays on engineering, AI, leadership and building.
+Notes on engineering, AI, leadership and building.
 
 ${listPosts("professional") || "_Nothing published yet._"}
 
@@ -61,9 +61,9 @@ ${listPosts("faith") || "_Nothing published yet._"}
 
 ## Pages
 
-- [Home](${SITE_URL}/): overview, what he does, selected work, recent essays
+- [Home](${SITE_URL}/): overview, what he does, recent notes and faith writing
 - [Work](${SITE_URL}/work): every published project
-- [Writing](${SITE_URL}/articles): every published professional essay
+- [Notes](${SITE_URL}/articles): every published professional note
 - [Faith](${SITE_URL}/faith): every published faith article
 - [About](${SITE_URL}/about): background and experience
 - [RSS feed — professional](${SITE_URL}/rss.xml)

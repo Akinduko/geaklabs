@@ -64,7 +64,7 @@ export function siteJsonLd(
   };
 }
 
-/** Article graph for a single essay. */
+/** Article graph for a single post. */
 export function articleJsonLd(post: {
   title: string;
   slug: string;

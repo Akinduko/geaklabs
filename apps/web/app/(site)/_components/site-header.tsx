@@ -6,7 +6,7 @@ export async function SiteHeader() {
   const copy = await getSiteCopy();
   const nav = [
     { href: "/work", label: "Work" },
-    { href: "/articles", label: "Writing" },
+    { href: "/articles", label: "Notes" },
     { href: "/faith", label: copy["nav.faith"] || "Faith" },
     { href: "/about", label: "About" },
   ];

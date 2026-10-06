@@ -1,11 +1,11 @@
 import type { ContentSection } from "@geaklabs/db";
 
 /**
- * The two halves of the site. Professional essays live under /articles,
+ * The two halves of the site. Professional notes live under /articles,
  * faith writing under /faith; each has its own listing and RSS feed.
  */
 export const SECTIONS = {
-  professional: { path: "/articles", label: "Writing", feed: "/rss.xml" },
+  professional: { path: "/articles", label: "Notes", feed: "/rss.xml" },
   faith: { path: "/faith", label: "Faith", feed: "/faith/rss.xml" },
 } as const satisfies Record<ContentSection, { path: string; label: string; feed: string }>;
 

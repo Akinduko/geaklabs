@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: "/",
       types: {
         "application/rss+xml": [
-          { url: "/rss.xml", title: "GEAK LABS — The Review" },
+          { url: "/rss.xml", title: "GEAK LABS — Notes" },
           { url: "/faith/rss.xml", title: copy["faith.rssTitle"] },
         ],
       },
@@ -135,7 +135,7 @@ export default async function HomePage() {
           <Container size="wide">
             <div className="grid gap-10 py-20 lg:grid-cols-12 lg:gap-6">
               <div className="lg:col-span-4">
-                <span className="kicker text-ink-500">Writing</span>
+                <span className="kicker text-ink-500">Notes</span>
                 <h2 className="mt-5 max-w-[360px] text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-ink-900 sm:text-[40px]">
                   {copy["writing.heading"]}
                 </h2>
@@ -143,7 +143,7 @@ export default async function HomePage() {
                   href="/articles"
                   className="mt-7 inline-block border-b border-ink-900 pb-0.5 text-sm font-medium text-ink-900 transition-colors hover:border-cyan-ink hover:text-cyan-ink"
                 >
-                  All essays
+                  All notes
                 </Link>
               </div>
               <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:col-span-7 lg:col-start-6">

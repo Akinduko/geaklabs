@@ -15,7 +15,7 @@ export default async function NewPostPage({
   return (
     <div>
       <h1 className="font-display text-2xl font-semibold text-ink-900">New post</h1>
-      <p className="mt-1 font-serif text-ink-500">Write an essay for the Review.</p>
+      <p className="mt-1 font-serif text-ink-500">Write a note, or a faith post.</p>
       <div className="mt-8">
         <PostForm categories={categories} action={action} error={error} />
       </div>

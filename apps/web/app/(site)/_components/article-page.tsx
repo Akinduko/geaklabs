@@ -100,7 +100,7 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
               {post.category.name}
             </Link>
           ) : (
-            <span className="kicker text-ink-500">{section === "faith" ? "Faith" : "Essay"}</span>
+            <span className="kicker text-ink-500">{section === "faith" ? "Faith" : "Note"}</span>
           )}
           <h1 className="mt-5 font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.95] tracking-[-0.03em] text-ink-900">
             {post.title}

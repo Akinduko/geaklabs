@@ -82,7 +82,7 @@ export const SITE_COPY_FIELDS = [
   {
     key: "writing.heading",
     group: "Home — sections",
-    label: "Writing heading",
+    label: "Notes heading (home page)",
     kind: "textarea",
     default: "Notes from building, leading and learning.",
   },
@@ -132,8 +132,8 @@ export const SITE_COPY_FIELDS = [
   },
   {
     key: "articles.intro",
-    group: "Writing page",
-    label: "Introduction under “Writing”",
+    group: "Notes page",
+    label: "Introduction under “Notes”",
     kind: "textarea",
     default:
       "Notes on engineering, AI, leadership and building things — mostly lessons from doing the work rather than observing it.",

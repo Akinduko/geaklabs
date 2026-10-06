@@ -9,10 +9,10 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   alternates: {
     canonical: "/articles",
-    types: { "application/rss+xml": [{ url: "/rss.xml", title: "GEAK LABS — The Review" }] },
+    types: { "application/rss+xml": [{ url: "/rss.xml", title: "GEAK LABS — Notes" }] },
   },
-  title: "Writing",
-  description: "Essays on engineering, AI, leadership and building — from doing the work.",
+  title: "Notes",
+  description: "Notes on engineering, AI, leadership and building — from doing the work.",
 };
 
 export default async function ArticlesPage() {
@@ -23,7 +23,7 @@ export default async function ArticlesPage() {
       <Container size="wide">
         <header className="max-w-3xl py-14 lg:py-20">
           <h1 className="font-serif text-[clamp(3.5rem,7vw,6.5rem)] leading-[0.92] tracking-[-0.03em] text-ink-900">
-            Writing
+            Notes
           </h1>
           <p className="mt-7 max-w-[52ch] text-lg leading-[1.55] text-ink-700">
             {copy["articles.intro"]}
