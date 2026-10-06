@@ -11,8 +11,11 @@ export {
   subscribers,
   users,
   contentStatus,
+  contentSection,
+  CONTENT_SECTIONS,
 } from "./schema";
 export type {
+  ContentSection,
   Post,
   NewPost,
   Category,

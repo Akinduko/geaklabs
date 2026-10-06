@@ -2,14 +2,14 @@ import Link from "next/link";
 import { Container, GeakMark } from "@geaklabs/ui";
 import { getSiteCopy } from "@geaklabs/db";
 
-const NAV = [
-  { href: "/work", label: "Work" },
-  { href: "/articles", label: "Writing" },
-  { href: "/about", label: "About" },
-];
-
 export async function SiteHeader() {
   const copy = await getSiteCopy();
+  const nav = [
+    { href: "/work", label: "Work" },
+    { href: "/articles", label: "Writing" },
+    { href: "/faith", label: copy["nav.faith"] || "Faith" },
+    { href: "/about", label: "About" },
+  ];
 
   return (
     <header className="sticky top-0 z-40 bg-paper/90 backdrop-blur-md">
@@ -21,7 +21,8 @@ export async function SiteHeader() {
             aria-label="GEAK LABS home"
           >
             <GeakMark className="h-[22px] w-[22px]" />
-            <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-ink-900">
+            {/* Wordmark hides on phones so five nav links fit beside the mark. */}
+            <span className="hidden text-[13px] font-semibold uppercase tracking-[0.14em] text-ink-900 sm:inline">
               Geak&nbsp;Labs
             </span>
           </Link>
@@ -32,7 +33,7 @@ export async function SiteHeader() {
             {copy["header.tagline"]}
           </span>
           <nav className="flex items-center justify-end gap-5 text-[13px] font-medium sm:gap-7 lg:col-span-3">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

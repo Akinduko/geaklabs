@@ -13,6 +13,15 @@ import {
 
 export const contentStatus = pgEnum("content_status", ["draft", "published"]);
 
+/**
+ * Which side of the site a post (or category) belongs to. Professional essays live
+ * under /articles; faith writing under /faith. Set on the post itself so a post can
+ * never leak into the wrong feed just because it has no category.
+ */
+export const contentSection = pgEnum("content_section", ["professional", "faith"]);
+export const CONTENT_SECTIONS = ["professional", "faith"] as const;
+export type ContentSection = (typeof CONTENT_SECTIONS)[number];
+
 /** Single admin (extendable to multi-user later). */
 export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -23,12 +32,13 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-/** Editorial topics: Leadership / Management / Technology. */
+/** Editorial topics, each scoped to one section (Engineering / AI / … or Faith). */
 export const categories = pgTable("categories", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 80 }).notNull(),
   slug: varchar("slug", { length: 80 }).notNull().unique(),
   description: text("description"),
+  section: contentSection("section").notNull().default("professional"),
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
@@ -46,6 +56,7 @@ export const posts = pgTable(
     coverImageAlt: varchar("cover_image_alt", { length: 200 }),
     categoryId: uuid("category_id").references(() => categories.id, { onDelete: "set null" }),
     tags: text("tags").array().notNull().default([]),
+    section: contentSection("section").notNull().default("professional"),
     status: contentStatus("status").notNull().default("draft"),
     featured: boolean("featured").notNull().default(false),
     readingMinutes: integer("reading_minutes").notNull().default(1),
@@ -56,6 +67,7 @@ export const posts = pgTable(
   (t) => [
     index("posts_status_idx").on(t.status),
     index("posts_category_idx").on(t.categoryId),
+    index("posts_section_idx").on(t.section),
     index("posts_published_idx").on(t.publishedAt),
   ],
 );

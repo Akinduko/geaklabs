@@ -1,12 +1,21 @@
 import Link from "next/link";
-import { db, posts, categories } from "@geaklabs/db";
-import { desc, eq } from "drizzle-orm";
+import { db, posts, categories, CONTENT_SECTIONS, type ContentSection } from "@geaklabs/db";
+import { and, desc, eq } from "drizzle-orm";
 import { DeleteButton } from "../_components/delete-button";
 import { deletePost } from "@/lib/actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function PostsPage() {
+const SECTION_LABELS: Record<ContentSection, string> = { professional: "Professional", faith: "Faith" };
+
+export default async function PostsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ section?: string }>;
+}) {
+  const { section: raw } = await searchParams;
+  const section = CONTENT_SECTIONS.find((s) => s === raw);
+
   const rows = await db
     .select({
       id: posts.id,
@@ -14,12 +23,23 @@ export default async function PostsPage() {
       slug: posts.slug,
       status: posts.status,
       featured: posts.featured,
+      section: posts.section,
       updatedAt: posts.updatedAt,
       categoryName: categories.name,
     })
     .from(posts)
     .leftJoin(categories, eq(posts.categoryId, categories.id))
+    .where(section ? eq(posts.section, section) : undefined)
     .orderBy(desc(posts.updatedAt));
+
+  const filters: { label: string; href: string; active: boolean }[] = [
+    { label: "All", href: "/posts", active: !section },
+    ...CONTENT_SECTIONS.map((s) => ({
+      label: SECTION_LABELS[s],
+      href: `/posts?section=${s}`,
+      active: section === s,
+    })),
+  ];
 
   return (
     <div>
@@ -36,7 +56,23 @@ export default async function PostsPage() {
         </Link>
       </div>
 
-      <div className="mt-8 overflow-hidden rounded-2xl border border-ink-200 bg-paper">
+      <div className="mt-6 flex gap-2 font-display text-sm">
+        {filters.map((f) => (
+          <Link
+            key={f.href}
+            href={f.href}
+            className={
+              f.active
+                ? "rounded-full bg-ink-900 px-3 py-1 text-paper"
+                : "rounded-full border border-ink-200 px-3 py-1 text-ink-500 hover:text-ink-900"
+            }
+          >
+            {f.label}
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-4 overflow-hidden rounded-2xl border border-ink-200 bg-paper">
         {rows.length === 0 ? (
           <p className="p-8 text-center font-serif text-ink-500">No posts yet.</p>
         ) : (
@@ -44,6 +80,7 @@ export default async function PostsPage() {
             <thead className="border-b border-ink-100 bg-ink-50">
               <tr className="font-display text-xs uppercase tracking-wider text-ink-400">
                 <th className="px-5 py-3">Title</th>
+                <th className="px-5 py-3">Section</th>
                 <th className="px-5 py-3">Topic</th>
                 <th className="px-5 py-3">Status</th>
                 <th className="px-5 py-3"></th>
@@ -58,6 +95,7 @@ export default async function PostsPage() {
                     </Link>
                     {p.featured && <span className="ml-2 text-xs text-ink-400">★ featured</span>}
                   </td>
+                  <td className="px-5 py-3 text-ink-500">{SECTION_LABELS[p.section]}</td>
                   <td className="px-5 py-3 text-ink-500">{p.categoryName ?? "—"}</td>
                   <td className="px-5 py-3">
                     <span

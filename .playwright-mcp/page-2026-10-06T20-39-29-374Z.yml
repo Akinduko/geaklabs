@@ -1,0 +1,15 @@
+- generic [active] [ref=f9e1]:
+  - generic [ref=f9e3]:
+    - generic [ref=f9e4]:
+      - img "GEAK LABS" [ref=f9e5]
+      - heading "GEAK LABS Studio" [level=1] [ref=f9e8]
+      - paragraph [ref=f9e9]: Sign in to manage content.
+    - generic [ref=f9e10]:
+      - generic [ref=f9e11]:
+        - text: Email
+        - textbox "Email" [ref=f9e12]
+      - generic [ref=f9e13]:
+        - text: Password
+        - textbox "Password" [ref=f9e14]
+      - button "Sign in" [ref=f9e15]
+  - alert [ref=f9e16]

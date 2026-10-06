@@ -6,13 +6,16 @@ import { ArticleCard } from "../_components/article-card";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/articles" },
+  alternates: {
+    canonical: "/articles",
+    types: { "application/rss+xml": [{ url: "/rss.xml", title: "GEAK LABS — The Review" }] },
+  },
   title: "Writing",
-  description: "Essays on leadership, management, and technology.",
+  description: "Essays on engineering, AI, leadership and building — from doing the work.",
 };
 
 export default async function ArticlesPage() {
-  const [posts, copy] = await Promise.all([getPublishedPosts(), getSiteCopy()]);
+  const [posts, copy] = await Promise.all([getPublishedPosts(undefined, "professional"), getSiteCopy()]);
 
   return (
     <>

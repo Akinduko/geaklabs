@@ -1,10 +1,11 @@
 import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "./client";
 import { posts, categories, projects, experiences, services, siteCopy } from "./schema";
+import type { ContentSection } from "./schema";
 import { SITE_COPY_DEFAULTS, type SiteCopy } from "./site-copy";
 
-/** Published posts, newest first, with category joined. */
-export async function getPublishedPosts(limit?: number) {
+/** Published posts, newest first, with category joined. Pass a section to scope the list. */
+export async function getPublishedPosts(limit?: number, section?: ContentSection) {
   const rows = await db
     .select({
       id: posts.id,
@@ -15,18 +16,23 @@ export async function getPublishedPosts(limit?: number) {
       readingMinutes: posts.readingMinutes,
       publishedAt: posts.publishedAt,
       featured: posts.featured,
+      section: posts.section,
       categoryName: categories.name,
       categorySlug: categories.slug,
     })
     .from(posts)
     .leftJoin(categories, eq(posts.categoryId, categories.id))
-    .where(eq(posts.status, "published"))
+    .where(
+      section
+        ? and(eq(posts.status, "published"), eq(posts.section, section))
+        : eq(posts.status, "published"),
+    )
     .orderBy(desc(posts.publishedAt))
     .limit(limit ?? 100);
   return rows;
 }
 
-export async function getFeaturedPost() {
+export async function getFeaturedPost(section?: ContentSection) {
   const [row] = await db
     .select({
       id: posts.id,
@@ -36,12 +42,19 @@ export async function getFeaturedPost() {
       coverImageUrl: posts.coverImageUrl,
       readingMinutes: posts.readingMinutes,
       publishedAt: posts.publishedAt,
+      section: posts.section,
       categoryName: categories.name,
       categorySlug: categories.slug,
     })
     .from(posts)
     .leftJoin(categories, eq(posts.categoryId, categories.id))
-    .where(and(eq(posts.status, "published"), eq(posts.featured, true)))
+    .where(
+      and(
+        eq(posts.status, "published"),
+        eq(posts.featured, true),
+        ...(section ? [eq(posts.section, section)] : []),
+      ),
+    )
     .orderBy(desc(posts.publishedAt))
     .limit(1);
   return row ?? null;
@@ -68,6 +81,7 @@ export async function getPostsByCategory(categorySlug: string, limit?: number) {
       coverImageUrl: posts.coverImageUrl,
       readingMinutes: posts.readingMinutes,
       publishedAt: posts.publishedAt,
+      section: posts.section,
       categoryName: categories.name,
       categorySlug: categories.slug,
     })
@@ -79,8 +93,10 @@ export async function getPostsByCategory(categorySlug: string, limit?: number) {
   return rows;
 }
 
-export async function getAllCategories() {
-  return db.select().from(categories).orderBy(categories.sortOrder);
+/** Categories in sort order, optionally scoped to one section. */
+export async function getAllCategories(section?: ContentSection) {
+  const q = db.select().from(categories);
+  return (section ? q.where(eq(categories.section, section)) : q).orderBy(categories.sortOrder);
 }
 
 export async function getCategoryBySlug(slug: string) {

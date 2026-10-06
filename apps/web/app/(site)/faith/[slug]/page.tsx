@@ -3,9 +3,9 @@ import { ArticlePage, articleMetadata, type ArticleParams } from "../../_compone
 export const revalidate = 60;
 
 export function generateMetadata(props: ArticleParams) {
-  return articleMetadata(props, "professional");
+  return articleMetadata(props, "faith");
 }
 
-export default function ProfessionalArticlePage(props: ArticleParams) {
-  return <ArticlePage {...props} section="professional" />;
+export default function FaithArticlePage(props: ArticleParams) {
+  return <ArticlePage {...props} section="faith" />;
 }

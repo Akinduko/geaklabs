@@ -3,21 +3,60 @@
 import { useState } from "react";
 import { RichEditor } from "../../_components/rich-editor";
 import { ImageUpload } from "../../_components/image-upload";
-import type { Post, Category } from "@geaklabs/db";
+import type { Post, Category, ContentSection } from "@geaklabs/db";
+
+const SECTION_LABELS: Record<ContentSection, string> = {
+  professional: "Professional",
+  faith: "Faith",
+};
 
 export function PostForm({
   post,
   categories,
   action,
+  error,
 }: {
   post?: Post;
   categories: Category[];
   action: (fd: FormData) => void;
+  error?: string;
 }) {
   const [coverUrl, setCoverUrl] = useState(post?.coverImageUrl ?? "");
+  const [section, setSection] = useState<ContentSection>(post?.section ?? "professional");
+  // The topic picker only offers categories from the chosen section, so a faith post
+  // can't be filed under "Engineering" by accident. The server checks this too.
+  const topics = categories.filter((c) => c.section === section);
+  const categoryStillValid = topics.some((c) => c.id === post?.categoryId);
 
   return (
     <form action={action} className="space-y-6">
+      {error === "section" && (
+        <p className="rounded-lg bg-red-50 px-4 py-2.5 font-display text-sm text-red-600">
+          That topic belongs to the other section. Pick a topic from the post’s own section, or none.
+        </p>
+      )}
+      <fieldset>
+        <legend className="mb-1.5 block font-display text-sm font-medium text-ink-700">Section</legend>
+        <div className="flex gap-6 pt-1">
+          {(Object.keys(SECTION_LABELS) as ContentSection[]).map((s) => (
+            <label key={s} className="flex items-center gap-2 font-display text-sm text-ink-700">
+              <input
+                type="radio"
+                name="section"
+                value={s}
+                checked={section === s}
+                onChange={() => setSection(s)}
+                className="h-4 w-4"
+              />
+              {SECTION_LABELS[s]}
+            </label>
+          ))}
+        </div>
+        <p className="mt-1.5 font-display text-xs text-ink-400">
+          Professional posts appear under /articles; faith posts under /faith. Each has its own feed.
+        </p>
+      </fieldset>
+
       <Field label="Title">
         <input
           name="title"
@@ -33,9 +72,14 @@ export function PostForm({
           <input name="slug" defaultValue={post?.slug} className="input" placeholder="auto" />
         </Field>
         <Field label="Topic">
-          <select name="categoryId" defaultValue={post?.categoryId ?? ""} className="input">
+          <select
+            key={section}
+            name="categoryId"
+            defaultValue={categoryStillValid ? (post?.categoryId ?? "") : ""}
+            className="input"
+          >
             <option value="">— none —</option>
-            {categories.map((c) => (
+            {topics.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>

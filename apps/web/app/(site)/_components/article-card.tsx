@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { ContentSection } from "@geaklabs/db";
 import { formatDate } from "@/lib/format";
+import { postHref } from "@/lib/sections";
 
 export type ArticleCardData = {
   slug: string;
@@ -11,12 +13,13 @@ export type ArticleCardData = {
   publishedAt: Date | string | null;
   categoryName: string | null;
   categorySlug: string | null;
+  section?: ContentSection | null;
 };
 
 export function ArticleCard({ post, priority }: { post: ArticleCardData; priority?: boolean }) {
   return (
     <article className="group flex flex-col">
-      <Link href={`/articles/${post.slug}`} className="flex flex-col">
+      <Link href={postHref(post)} className="flex flex-col">
         {post.coverImageUrl && (
           <div className="relative mb-5 aspect-[16/10] overflow-hidden bg-ink-100">
             <Image

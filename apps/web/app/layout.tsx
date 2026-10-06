@@ -16,9 +16,27 @@ export async function generateMetadata(): Promise<Metadata> {
   description: copy["meta.description"],
   alternates: {
     canonical: "/",
-    types: { "application/rss+xml": [{ url: "/rss.xml", title: "GEAK LABS" }] },
+    types: {
+      "application/rss+xml": [
+        { url: "/rss.xml", title: "GEAK LABS — The Review" },
+        { url: "/faith/rss.xml", title: copy["faith.rssTitle"] },
+      ],
+    },
   },
-  keywords: ["AI", "AI strategy", "AI governance", "AI adoption", "process automation", "leadership", "management", "technology", "GEAK LABS"],
+  keywords: [
+    "AI",
+    "AI strategy",
+    "AI governance",
+    "AI adoption",
+    "process automation",
+    "engineering",
+    "leadership",
+    "building",
+    "faith",
+    "Christian writing",
+    "scripture",
+    "GEAK LABS",
+  ],
   authors: [{ name: "Olugbenga Akinduko" }],
   openGraph: {
     type: "website",

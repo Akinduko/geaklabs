@@ -4,7 +4,7 @@ import { db } from "./client";
 import { users, categories, posts, projects, experiences, services } from "./schema";
 
 /**
- * Seeds the database with the admin account, the three editorial topics,
+ * Seeds the database with the admin account, the editorial topics (professional and faith),
  * and PLACEHOLDER content (original copy) to be replaced via the admin app.
  */
 
@@ -29,9 +29,11 @@ async function main() {
 
   // ---- Categories ----
   const cats = [
-    { name: "Leadership", slug: "leadership", description: "Judgment, clarity, and the human parts of leading.", sortOrder: 1 },
-    { name: "Management", slug: "management", description: "Systems, cadence, and getting things done.", sortOrder: 2 },
-    { name: "Technology", slug: "technology", description: "Building products and the teams behind them.", sortOrder: 3 },
+    { name: "Engineering", slug: "engineering", description: "Architecture, systems, reliability and the craft of building software.", sortOrder: 1, section: "professional" as const },
+    { name: "AI", slug: "ai", description: "Building useful systems around models, agents, automation and new ways of working.", sortOrder: 2, section: "professional" as const },
+    { name: "Leadership", slug: "leadership", description: "Clarity, judgment, ownership and the human side of building engineering organisations.", sortOrder: 3, section: "professional" as const },
+    { name: "Building", slug: "building", description: "Products, startups, experiments and lessons from turning ideas into something real.", sortOrder: 4, section: "professional" as const },
+    { name: "Faith", slug: "faith", description: "Scripture, prayer and following Jesus in ordinary life.", sortOrder: 10, section: "faith" as const },
   ];
   await db.insert(categories).values(cats).onConflictDoNothing({ target: categories.slug });
   const catRows = await db.select().from(categories);
@@ -52,7 +54,7 @@ async function main() {
     {
       title: "Run the meeting you'd want to attend",
       slug: "run-the-meeting",
-      categorySlug: "management",
+      categorySlug: "leadership",
       featured: false,
       excerpt: "A field guide to agendas, decisions, and the quiet discipline of ending on time.",
       body: `<p>The average recurring meeting is a tax everyone pays and no one audits. The fix is not fewer meetings in the abstract — it is meetings with a job.</p><h2>Every meeting owes you a decision or a change</h2><p>If a meeting cannot name the decision it exists to make or the shared understanding it exists to build, it should be an email. Protect the calendar the way you'd protect a budget.</p>`,
@@ -60,7 +62,7 @@ async function main() {
     {
       title: "Boring technology is a competitive advantage",
       slug: "boring-technology",
-      categorySlug: "technology",
+      categorySlug: "engineering",
       featured: false,
       excerpt: "Why the most ambitious teams choose the least exciting tools — and win.",
       body: `<p>Novel technology carries a hidden tax: the unknown unknowns you discover in production, at 2am, with customers watching. Boring, well-understood tools spend that budget on the product instead.</p><h2>Spend your innovation tokens deliberately</h2><p>You get a small number of genuinely novel bets per team. Spend them where novelty is the point — not on the database, the queue, and the deploy pipeline.</p>`,
@@ -84,6 +86,7 @@ async function main() {
         excerpt: p.excerpt,
         contentHtml: p.body,
         categoryId: catBySlug[p.categorySlug],
+        section: "professional",
         status: "published",
         featured: p.featured,
         readingMinutes: readingMinutes(p.body),

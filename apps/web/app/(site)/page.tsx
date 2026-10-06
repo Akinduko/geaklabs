@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@geaklabs/ui";
-import { getPublishedPosts, getProjects, getServices, getSiteCopy, copyLines } from "@geaklabs/db";
+import {
+  getPublishedPosts,
+  getProjects,
+  getServices,
+  getSiteCopy,
+  getAllCategories,
+  copyLines,
+} from "@geaklabs/db";
 import { ProjectTable } from "./_components/project-table";
 import { JsonLd } from "./_components/json-ld";
 import { siteJsonLd } from "@/lib/seo";
+import { postHref } from "@/lib/sections";
 
 export const revalidate = 60;
 
@@ -13,13 +21,23 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: copy["meta.title"] },
     description: copy["meta.description"],
-    alternates: { canonical: "/" },
+    alternates: {
+      canonical: "/",
+      types: {
+        "application/rss+xml": [
+          { url: "/rss.xml", title: "GEAK LABS — The Review" },
+          { url: "/faith/rss.xml", title: copy["faith.rssTitle"] },
+        ],
+      },
+    },
   };
 }
 
 export default async function HomePage() {
-  const [posts, projects, services, copy] = await Promise.all([
-    getPublishedPosts(4),
+  const [posts, faithPosts, faithTopics, projects, services, copy] = await Promise.all([
+    getPublishedPosts(4, "professional"),
+    getPublishedPosts(3, "faith"),
+    getAllCategories("faith"),
     getProjects(),
     getServices(),
     getSiteCopy(),
@@ -30,7 +48,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <JsonLd data={siteJsonLd(copy, services)} />
+      <JsonLd data={siteJsonLd(copy, services, faithTopics)} />
       {/* Hero — the one place the serif and the gradient are spent */}
       <section className="border-b border-rule">
         <Container size="wide">
@@ -149,7 +167,7 @@ export default async function HomePage() {
               </div>
               <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:col-span-7 lg:col-start-6">
                 {posts.map((post) => (
-                  <Link key={post.slug} href={`/articles/${post.slug}`} className="group block">
+                  <Link key={post.slug} href={postHref(post)} className="group block">
                     {post.categoryName && (
                       <span className="kicker text-ink-500">{post.categoryName}</span>
                     )}
@@ -159,6 +177,42 @@ export default async function HomePage() {
                   </Link>
                 ))}
               </div>
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* Faith — a smaller block, only once something is published there */}
+      {faithPosts.length > 0 && (
+        <section className="border-t border-rule">
+          <Container size="wide">
+            <div className="grid gap-8 py-16 lg:grid-cols-12 lg:gap-6">
+              <div className="lg:col-span-4">
+                <span className="kicker text-ink-500">{copy["nav.faith"] || "Faith"}</span>
+                <h2 className="mt-5 max-w-[360px] text-3xl font-semibold leading-[1.05] tracking-[-0.03em] text-ink-900">
+                  {copy["faith.heading"]}
+                </h2>
+                <Link
+                  href="/faith"
+                  className="mt-6 inline-block border-b border-ink-900 pb-0.5 text-sm font-medium text-ink-900 transition-colors hover:border-cyan-ink hover:text-cyan-ink"
+                >
+                  More on faith
+                </Link>
+              </div>
+              <ul className="divide-y divide-rule border-y border-rule lg:col-span-7 lg:col-start-6">
+                {faithPosts.map((post) => (
+                  <li key={post.slug}>
+                    <Link href={postHref(post)} className="group flex flex-col gap-1.5 py-5">
+                      <span className="text-xl font-medium leading-[1.25] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
+                        {post.title}
+                      </span>
+                      {post.excerpt && (
+                        <span className="text-[15px] leading-normal text-ink-700">{post.excerpt}</span>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </Container>
         </section>

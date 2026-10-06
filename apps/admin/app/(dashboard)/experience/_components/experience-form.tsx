@@ -64,7 +64,7 @@ export function ExperienceForm({
         />
       </Field>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-3">
         <label className="flex items-center gap-2 font-display text-sm text-ink-700">
           <input
             type="checkbox"
@@ -73,6 +73,15 @@ export function ExperienceForm({
             className="h-4 w-4"
           />
           Current role
+        </label>
+        <label className="flex items-center gap-2 font-display text-sm text-ink-700">
+          <input
+            type="checkbox"
+            name="published"
+            defaultChecked={experience ? experience.status === "published" : true}
+            className="h-4 w-4"
+          />
+          Show on the site
         </label>
         <Field label="Sort order (lower = first)">
           <input

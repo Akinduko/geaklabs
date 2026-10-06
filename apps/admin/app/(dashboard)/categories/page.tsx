@@ -13,13 +13,14 @@ export default async function CategoriesPage() {
       name: categories.name,
       slug: categories.slug,
       description: categories.description,
+      section: categories.section,
       sortOrder: categories.sortOrder,
       postCount: sql<number>`count(${posts.id})`.mapWith(Number),
     })
     .from(categories)
     .leftJoin(posts, eq(posts.categoryId, categories.id))
     .groupBy(categories.id)
-    .orderBy(asc(categories.sortOrder));
+    .orderBy(asc(categories.section), asc(categories.sortOrder));
 
   return (
     <div>
@@ -60,8 +61,8 @@ export default async function CategoriesPage() {
                   <p className="mt-0.5 truncate font-serif text-sm text-ink-500">{c.description}</p>
                 )}
                 <p className="mt-1 font-display text-xs text-ink-400">
-                  /topics/{c.slug} · {c.postCount} {c.postCount === 1 ? "post" : "posts"} · order{" "}
-                  {c.sortOrder}
+                  {c.section === "faith" ? "Faith" : "Professional"} · /topics/{c.slug} · {c.postCount}{" "}
+                  {c.postCount === 1 ? "post" : "posts"} · order {c.sortOrder}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-3 font-display text-sm">

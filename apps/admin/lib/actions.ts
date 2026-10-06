@@ -3,7 +3,18 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { eq, sql } from "drizzle-orm";
-import { db, posts, projects, experiences, services, siteCopy, categories, SITE_COPY_FIELDS } from "@geaklabs/db";
+import {
+  db,
+  posts,
+  projects,
+  experiences,
+  services,
+  siteCopy,
+  categories,
+  SITE_COPY_FIELDS,
+  CONTENT_SECTIONS,
+  type ContentSection,
+} from "@geaklabs/db";
 import { auth } from "@/auth";
 import { slugify, readingMinutes, parseList } from "./helpers";
 import { revalidateWeb } from "./revalidate-web";
@@ -19,6 +30,15 @@ function str(fd: FormData, key: string): string {
 function bool(fd: FormData, key: string): boolean {
   return fd.get(key) === "on" || fd.get(key) === "true";
 }
+function section(fd: FormData): ContentSection {
+  const v = str(fd, "section");
+  return CONTENT_SECTIONS.find((s) => s === v) ?? "professional";
+}
+
+/** Listing + feed paths that show a post, by section. */
+function sectionPaths(s: ContentSection) {
+  return s === "faith" ? ["/faith", "/faith/rss.xml"] : ["/articles", "/rss.xml"];
+}
 
 /* ----------------------------- Posts ----------------------------- */
 
@@ -29,7 +49,32 @@ export async function savePost(id: string | null, fd: FormData) {
   const contentHtml = str(fd, "contentHtml");
   const slug = str(fd, "slug") || slugify(title);
   const status = bool(fd, "published") ? "published" : "draft";
+  const postSection = section(fd);
   const categoryId = str(fd, "categoryId") || null;
+
+  // A topic belongs to one section; refuse to file a post under a topic from the other side.
+  // The form already hides mismatched topics, so this only catches a stale or hand-edited submit.
+  let categorySlug: string | null = null;
+  if (categoryId) {
+    const [cat] = await db
+      .select({ slug: categories.slug, section: categories.section })
+      .from(categories)
+      .where(eq(categories.id, categoryId))
+      .limit(1);
+    if (!cat || cat.section !== postSection) {
+      redirect(`/posts${id ? `/${id}` : "/new"}?error=section`);
+    }
+    categorySlug = cat.slug;
+  }
+
+  // Keep the original publish date when editing an already-published post.
+  const [existing] = id
+    ? await db
+        .select({ publishedAt: posts.publishedAt, section: posts.section, slug: posts.slug })
+        .from(posts)
+        .where(eq(posts.id, id))
+        .limit(1)
+    : [];
 
   const values = {
     title,
@@ -39,11 +84,12 @@ export async function savePost(id: string | null, fd: FormData) {
     coverImageUrl: str(fd, "coverImageUrl") || null,
     coverImageAlt: str(fd, "coverImageAlt") || null,
     categoryId,
+    section: postSection,
     tags: parseList(fd.get("tags")),
     status: status as "draft" | "published",
     featured: bool(fd, "featured"),
     readingMinutes: readingMinutes(contentHtml),
-    publishedAt: status === "published" ? new Date() : null,
+    publishedAt: status === "published" ? (existing?.publishedAt ?? new Date()) : null,
     updatedAt: new Date(),
   };
 
@@ -53,16 +99,29 @@ export async function savePost(id: string | null, fd: FormData) {
     await db.insert(posts).values(values);
   }
 
+  // Revalidate wherever this post shows now — and wherever it used to, if it moved section or slug.
+  const paths = new Set<string>(["/", ...sectionPaths(postSection), `${sectionPaths(postSection)[0]}/${slug}`]);
+  if (existing) {
+    for (const p of sectionPaths(existing.section)) paths.add(p);
+    paths.add(`${sectionPaths(existing.section)[0]}/${existing.slug}`);
+  }
+  if (categorySlug) paths.add(`/topics/${categorySlug}`);
+
   revalidatePath("/posts");
-  await revalidateWeb(["/", "/articles", `/articles/${slug}`]);
+  await revalidateWeb([...paths]);
   redirect("/posts");
 }
 
 export async function deletePost(id: string) {
   await requireAuth();
+  const [row] = await db
+    .select({ section: posts.section })
+    .from(posts)
+    .where(eq(posts.id, id))
+    .limit(1);
   await db.delete(posts).where(eq(posts.id, id));
   revalidatePath("/posts");
-  await revalidateWeb(["/", "/articles"]);
+  await revalidateWeb(["/", ...sectionPaths(row?.section ?? "professional")]);
 }
 
 /* ---------------------------- Projects ---------------------------- */
@@ -126,6 +185,7 @@ export async function saveExperience(id: string | null, fd: FormData) {
     endDate: !isCurrent && endDate ? new Date(endDate) : null,
     isCurrent,
     sortOrder: Number(str(fd, "sortOrder")) || 0,
+    status: (bool(fd, "published") ? "published" : "draft") as "draft" | "published",
   };
 
   if (id) {
@@ -192,7 +252,7 @@ export async function saveSiteCopy(fd: FormData) {
   }
 
   revalidatePath("/copy");
-  await revalidateWeb(["/", "/about", "/work", "/articles"]);
+  await revalidateWeb(["/", "/about", "/work", "/articles", "/faith", "/rss.xml", "/faith/rss.xml"]);
   redirect("/copy?saved=1");
 }
 
@@ -208,6 +268,7 @@ export async function saveCategory(id: string | null, fd: FormData) {
     name,
     slug,
     description: str(fd, "description") || null,
+    section: section(fd),
     sortOrder: Number(str(fd, "sortOrder")) || 0,
   };
 
@@ -229,7 +290,7 @@ export async function saveCategory(id: string | null, fd: FormData) {
 
   revalidatePath("/categories");
   revalidatePath("/posts");
-  await revalidateWeb(["/", "/articles", `/topics/${slug}`]);
+  await revalidateWeb(["/", ...sectionPaths(values.section), `/topics/${slug}`]);
   redirect("/categories");
 }
 
@@ -264,6 +325,6 @@ export async function deleteCategory(id: string) {
 
   revalidatePath("/categories");
   revalidatePath("/posts");
-  await revalidateWeb(["/", "/articles", ...(row ? [`/topics/${row.slug}`] : [])]);
+  await revalidateWeb(["/", "/articles", "/faith", ...(row ? [`/topics/${row.slug}`] : [])]);
   return { ok: true as const };
 }

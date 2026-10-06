@@ -54,6 +54,17 @@ export function CategoryForm({
         Shown under the heading on the topic page, and used as its search description.
       </p>
 
+      <Field label="Section">
+        <select name="section" defaultValue={category?.section ?? "professional"} className="input">
+          <option value="professional">Professional</option>
+          <option value="faith">Faith</option>
+        </select>
+      </Field>
+      <p className="-mt-3 font-display text-xs text-ink-400">
+        Only posts in the same section can use this topic. It also decides which listing the topic
+        page links back to.
+      </p>
+
       <Field label="Sort order (lower = first)">
         <input
           name="sortOrder"

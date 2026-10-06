@@ -30,7 +30,9 @@ export async function SiteFooter() {
             {linkedin && <FooterLink href={linkedin} external>LinkedIn</FooterLink>}
             {github && <FooterLink href={github} external>GitHub</FooterLink>}
             <FooterLink href="/articles">All essays</FooterLink>
+            <FooterLink href="/faith">{copy["nav.faith"] || "Faith"}</FooterLink>
             <FooterLink href="/rss.xml">RSS</FooterLink>
+            <FooterLink href="/faith/rss.xml">{copy["nav.faith"] || "Faith"} RSS</FooterLink>
             <span className="mt-4 text-xs text-ink-500">
               © {new Date().getFullYear()} GEAK LABS · Written &amp; built by Olugbenga Akinduko
             </span>

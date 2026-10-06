@@ -21,7 +21,7 @@ export const SITE_COPY_FIELDS = [
     group: "Header",
     label: "Tagline beside your name",
     kind: "text",
-    default: "AI strategy · governance · operations",
+    default: "Engineering · AI · Leadership · Faith",
   },
 
   // ---- Home: hero ----
@@ -30,7 +30,7 @@ export const SITE_COPY_FIELDS = [
     group: "Home — hero",
     label: "Small line above the headline",
     kind: "text",
-    default: "AI strategy, governance and operations leader",
+    default: "Principal Engineer · Builder · Writing on faith",
   },
   {
     key: "hero.headline",
@@ -38,14 +38,14 @@ export const SITE_COPY_FIELDS = [
     label: "Headline",
     kind: "textarea",
     hint: "One line per row. The full stop is added automatically.",
-    default: "I put AI\nto work",
+    default: "I build systems\nthat scale",
   },
   {
     key: "hero.subline",
     group: "Home — hero",
     label: "Italic line under the headline",
     kind: "text",
-    default: "And write about what breaks.",
+    default: "And write about what I’m learning — at work, and in faith.",
   },
   {
     key: "hero.intro",
@@ -53,7 +53,7 @@ export const SITE_COPY_FIELDS = [
     label: "Introduction paragraph",
     kind: "textarea",
     default:
-      "I help companies put AI to work — where to use it, how to optimise with it, and the strategy, governance and operating discipline to deploy it and keep it running well after launch. Whichever industry the work is in. The essays here come out of that work.",
+      "I'm a software engineer and engineering leader with more than a decade of experience building products, platforms and teams. My work spans distributed systems, APIs, cloud infrastructure and AI — turning ambitious ideas into software that works in production and keeps working as the business grows. I'm also a Christian. Alongside the engineering, I write about following Jesus in ordinary working life — two sides of one person, kept side by side here.",
   },
   {
     key: "hero.now",
@@ -61,7 +61,7 @@ export const SITE_COPY_FIELDS = [
     label: "“Now” list",
     kind: "lines",
     hint: "One item per line. Leave empty to hide the block.",
-    default: "Writing at GEAK LABS",
+    default: "Principal Engineer\nBuilding at GEAK LABS\nExploring AI-native engineering",
   },
   {
     key: "hero.open_to",
@@ -69,7 +69,7 @@ export const SITE_COPY_FIELDS = [
     label: "“Open to” list",
     kind: "lines",
     hint: "One item per line. Leave empty to hide the block.",
-    default: "Advisory\nFractional leadership",
+    default: "Advisory\nEngineering leadership\nInteresting problems",
   },
 
   // ---- Home: sections ----
@@ -78,14 +78,22 @@ export const SITE_COPY_FIELDS = [
     group: "Home — sections",
     label: "“What I do” heading",
     kind: "text",
-    default: "AI, end to end.",
+    default: "Engineering, end to end.",
   },
   {
     key: "writing.heading",
     group: "Home — sections",
     label: "Writing heading",
     kind: "textarea",
-    default: "Notes from doing the work, not observing it.",
+    default: "Notes from building, leading and learning.",
+  },
+  {
+    key: "faith.heading",
+    group: "Home — sections",
+    label: "Faith heading",
+    kind: "textarea",
+    hint: "Heading of the faith block on the home page. The block only shows once a faith post is published.",
+    default: "Faith, written down.",
   },
 
   // ---- About ----
@@ -94,7 +102,7 @@ export const SITE_COPY_FIELDS = [
     group: "About",
     label: "Headline",
     kind: "textarea",
-    default: "I help companies use AI well, and write about what I learn doing it.",
+    default: "I build technology, teams and companies, follow Jesus, and write about what I learn along the way.",
   },
   {
     key: "about.bio",
@@ -103,7 +111,7 @@ export const SITE_COPY_FIELDS = [
     kind: "paragraphs",
     hint: "Separate paragraphs with a blank line.",
     default:
-      "I’m Olugbenga Akinduko. I lead AI in companies end to end — deciding where it earns its place, optimising the work with it, and building the strategy, governance and operating discipline to deploy it and maintain it once the launch excitement fades. The industry changes from one engagement to the next; the pattern doesn’t.\n\nGEAK LABS is where I think out loud about that work — leadership, management and technology, and the parts of each that only make sense once you’ve done them. Most of what I write starts as something I got wrong first.",
+      "I'm Olugbenga Akinduko — a software engineer and engineering leader based in the UK. I've spent more than a decade building software, from payments and media platforms to distributed travel systems, APIs and cloud infrastructure.\n\nMy career has moved from hands-on engineering into technical and organisational leadership. I've been a founding engineer, Head of Engineering and today work at Principal Engineer level. I still like being close to the technology: architecture, backend systems, reliability, developer experience and increasingly the systems being built around AI.\n\nI've also spent a meaningful part of my career building from zero. I've joined companies as an early engineer, helped grow engineering teams, and built products outside my main roles. That experience taught me that the hardest technology decisions are rarely just about technology — they are also about customers, economics, people, timing and knowing what not to build.\n\nI'm also a Christian, and that isn't a separate compartment from the rest. Faith shapes how I think about work, ambition, failure and the people I build with. I write about it here too — scripture, prayer and what following Jesus asks of an ordinary working life — mostly to work things out for myself, and shared in case they help someone else.\n\nGEAK LABS is where I think and build in public. The professional writing covers engineering, AI, leadership and company building — usually through something I've built, a decision I've had to make, or something I understood differently after getting it wrong. The faith writing has its own section, so you can read one side, the other, or both.",
   },
 
   // ---- Work & Writing pages ----
@@ -113,7 +121,7 @@ export const SITE_COPY_FIELDS = [
     label: "Introduction under “Selected work”",
     kind: "textarea",
     default:
-      "Products, platforms and AI programmes I’ve built or led. The essays come out of this work — the problems here are the ones I end up writing about.",
+      "Products, platforms and companies I've built or helped build — from production systems inside global businesses to ideas started from zero.",
   },
   {
     key: "work.outro",
@@ -121,7 +129,7 @@ export const SITE_COPY_FIELDS = [
     label: "Closing line under the list",
     kind: "textarea",
     hint: "Leave empty to hide.",
-    default: "More of this work is under wraps for now. The writing is where the thinking behind it lives.",
+    default: "Some of the most interesting work can't be shown here. The writing is where I unpack the thinking behind it.",
   },
   {
     key: "articles.intro",
@@ -129,11 +137,51 @@ export const SITE_COPY_FIELDS = [
     label: "Introduction under “Writing”",
     kind: "textarea",
     default:
-      "Notes on leadership, management and technology — from doing the work, not observing it.",
+      "Notes on engineering, AI, leadership and building things — mostly lessons from doing the work rather than observing it.",
+  },
+
+  // ---- Faith section ----
+  {
+    key: "nav.faith",
+    group: "Faith",
+    label: "Navigation label",
+    kind: "text",
+    hint: "The link in the header and footer.",
+    default: "Faith",
+  },
+  {
+    key: "faith.title",
+    group: "Faith",
+    label: "Page heading",
+    kind: "text",
+    default: "Faith",
+  },
+  {
+    key: "faith.intro",
+    group: "Faith",
+    label: "Introduction under the heading",
+    kind: "textarea",
+    default:
+      "Notes on following Jesus — scripture, prayer and what faith asks of an ordinary working life. Written down to work them out, and shared in case they help someone else.",
+  },
+  {
+    key: "faith.metaDescription",
+    group: "Faith",
+    label: "Search description for the faith section",
+    kind: "textarea",
+    default:
+      "Faith writing by Olugbenga Akinduko, a Christian and Principal Engineer — notes on scripture, prayer and following Jesus in ordinary working life.",
+  },
+  {
+    key: "faith.rssTitle",
+    group: "Faith",
+    label: "RSS feed title",
+    kind: "text",
+    default: "GEAK LABS — Faith",
   },
 
   // ---- Footer / contact ----
-  { key: "footer.cta", group: "Footer", label: "Call to action", kind: "text", default: "Let’s talk." },
+  { key: "footer.cta", group: "Footer", label: "Call to action", kind: "text", default: "Let's build something." },
   { key: "footer.email", group: "Footer", label: "Contact email", kind: "text", hint: "Leave empty to hide.", default: "" },
   { key: "footer.linkedin", group: "Footer", label: "LinkedIn URL", kind: "text", hint: "Leave empty to hide.", default: "" },
   { key: "footer.github", group: "Footer", label: "GitHub URL", kind: "text", hint: "Leave empty to hide.", default: "" },
@@ -145,7 +193,7 @@ export const SITE_COPY_FIELDS = [
     label: "Site title",
     kind: "text",
     hint: "Shown in the browser tab and in search results.",
-    default: "GEAK LABS — AI strategy, governance and operations leadership",
+    default: "GEAK LABS — Engineering, AI, Leadership & Faith",
   },
   {
     key: "meta.description",
@@ -153,7 +201,7 @@ export const SITE_COPY_FIELDS = [
     label: "Site description",
     kind: "textarea",
     default:
-      "Olugbenga Akinduko — AI leader: using AI, optimising with it, and the strategy and governance to deploy and maintain it in a company. Field notes on leadership, management and technology.",
+      "Olugbenga Akinduko is a Principal Engineer and a Christian, writing about software engineering, AI, technical leadership and building companies — and about following Jesus in ordinary working life.",
   },
 ] as const satisfies readonly CopyField[];
 

@@ -47,7 +47,8 @@ export default async function ExperiencePage() {
                 </Link>
                 <p className="mt-0.5 font-display text-xs text-ink-400">
                   {e.startDate.getFullYear()} — {e.isCurrent ? "Present" : e.endDate?.getFullYear() ?? ""}
-                  {e.location ? ` · ${e.location}` : ""}
+                  {e.location ? ` · ${e.location}` : ""} ·{" "}
+                  {e.status === "published" ? "Shown on the site" : "Hidden"}
                 </p>
               </div>
               <div className="flex items-center gap-3 font-display text-sm">

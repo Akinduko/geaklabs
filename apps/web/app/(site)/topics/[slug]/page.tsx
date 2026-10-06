@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Container } from "@geaklabs/ui";
 import { getCategoryBySlug, getPostsByCategory, getAllCategories } from "@geaklabs/db";
 import { ArticleCard } from "../../_components/article-card";
+import { SECTIONS } from "@/lib/sections";
 
 export const revalidate = 60;
 
@@ -30,12 +32,15 @@ export default async function TopicPage({ params }: Params) {
   if (!category) notFound();
 
   const posts = await getPostsByCategory(slug);
+  const home = SECTIONS[category.section];
 
   return (
     <>
       <Container size="wide">
         <header className="max-w-3xl py-14 lg:py-20">
-          <span className="kicker text-ink-500">Topic</span>
+          <Link href={home.path} className="kicker text-ink-500 transition-colors hover:text-cyan-ink">
+            {home.label} · Topic
+          </Link>
           <h1 className="mt-5 font-serif text-[clamp(3.5rem,7vw,6.5rem)] leading-[0.92] tracking-[-0.03em] text-ink-900">
             {category.name}
           </h1>

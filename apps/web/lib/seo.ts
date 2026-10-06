@@ -1,4 +1,5 @@
-import type { SiteCopy } from "@geaklabs/db";
+import type { ContentSection, SiteCopy } from "@geaklabs/db";
+import { SECTIONS, postHref } from "./sections";
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const PERSON_NAME = "Olugbenga Akinduko";
@@ -13,7 +14,11 @@ export function abs(path: string) {
  * Person + Organization + WebSite graph for the home page.
  * Search engines and LLM crawlers use this to answer "who is this and what do they do".
  */
-export function siteJsonLd(copy: SiteCopy, services: { title: string; body: string | null }[]) {
+export function siteJsonLd(
+  copy: SiteCopy,
+  services: { title: string; body: string | null }[],
+  faithTopics: { name: string }[] = [],
+) {
   const personId = `${SITE_URL}/#person`;
   const orgId = `${SITE_URL}/#organization`;
 
@@ -27,7 +32,7 @@ export function siteJsonLd(copy: SiteCopy, services: { title: string; body: stri
         url: SITE_URL,
         jobTitle: copy["hero.kicker"],
         description: copy["hero.intro"],
-        knowsAbout: services.map((s) => s.title),
+        knowsAbout: [...services.map((s) => s.title), ...faithTopics.map((t) => t.name)],
         worksFor: { "@id": orgId },
       },
       {
@@ -69,8 +74,10 @@ export function articleJsonLd(post: {
   readingMinutes: number;
   coverImageUrl: string | null;
   categoryName?: string | null;
+  section?: ContentSection | null;
 }) {
-  const url = abs(`/articles/${post.slug}`);
+  const url = abs(postHref(post));
+  const home = SECTIONS[post.section ?? "professional"];
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -83,7 +90,8 @@ export function articleJsonLd(post: {
     author: { "@type": "Person", "@id": `${SITE_URL}/#person`, name: PERSON_NAME },
     publisher: { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: ORG_NAME },
     image: post.coverImageUrl ?? abs("/opengraph-image"),
-    articleSection: post.categoryName ?? undefined,
+    articleSection: post.categoryName ?? home.label,
+    isPartOf: { "@type": "CollectionPage", "@id": abs(home.path), name: home.label },
     timeRequired: `PT${Math.max(1, post.readingMinutes)}M`,
     isAccessibleForFree: true,
     inLanguage: "en",

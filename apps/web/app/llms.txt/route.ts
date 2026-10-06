@@ -1,4 +1,5 @@
 import { getPublishedPosts, getProjects, getServices, getSiteCopy } from "@geaklabs/db";
+import { postHref } from "@/lib/sections";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -13,8 +14,15 @@ export async function GET() {
     getSiteCopy(),
     getServices(),
     getProjects(),
-    getPublishedPosts(50),
+    getPublishedPosts(100),
   ]);
+
+  const listPosts = (section: "professional" | "faith") =>
+    posts
+      .filter((p) => p.section === section)
+      .slice(0, 50)
+      .map((p) => `- [${p.title}](${SITE_URL}${postHref(p)})${p.excerpt ? `: ${p.excerpt}` : ""}`)
+      .join("\n");
 
   const body = `# GEAK LABS
 
@@ -39,19 +47,27 @@ ${projects
   })
   .join("\n")}
 
-## Writing
+## Professional writing
 
-${posts
-  .map((p) => `- [${p.title}](${SITE_URL}/articles/${p.slug})${p.excerpt ? `: ${p.excerpt}` : ""}`)
-  .join("\n")}
+Essays on engineering, AI, leadership and building.
+
+${listPosts("professional") || "_Nothing published yet._"}
+
+## Faith writing
+
+${copy["faith.intro"]}
+
+${listPosts("faith") || "_Nothing published yet._"}
 
 ## Pages
 
 - [Home](${SITE_URL}/): overview, what he does, selected work, recent essays
 - [Work](${SITE_URL}/work): every published project
-- [Writing](${SITE_URL}/articles): every published essay
+- [Writing](${SITE_URL}/articles): every published professional essay
+- [Faith](${SITE_URL}/faith): every published faith article
 - [About](${SITE_URL}/about): background and experience
-- [RSS feed](${SITE_URL}/rss.xml)
+- [RSS feed — professional](${SITE_URL}/rss.xml)
+- [RSS feed — faith](${SITE_URL}/faith/rss.xml)
 
 ## Contact
 
