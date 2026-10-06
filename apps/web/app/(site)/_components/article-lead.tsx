@@ -13,7 +13,7 @@ export function ArticleLead({ post }: { post: ArticleCardData }) {
           post={post}
           priority
           sizes="(max-width: 1024px) 100vw, 60vw"
-          className="aspect-[4/3] lg:col-span-7"
+          className="aspect-video lg:col-span-7"
         />
         <div className="flex flex-col justify-center lg:col-span-5">
           {post.categoryName && <span className="kicker text-ink-500">{post.categoryName}</span>}

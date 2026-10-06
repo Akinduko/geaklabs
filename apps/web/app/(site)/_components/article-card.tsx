@@ -24,7 +24,7 @@ export function ArticleCard({ post, priority }: { post: ArticleCardData; priorit
           post={post}
           priority={priority}
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="mb-5 aspect-[16/10]"
+          className="mb-5 aspect-video"
         />
         {post.categoryName && <span className="kicker text-ink-500">{post.categoryName}</span>}
         <h3 className="mt-2.5 text-2xl font-medium leading-[1.2] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">

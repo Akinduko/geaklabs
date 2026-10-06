@@ -38,7 +38,7 @@ export default async function SeriesIndexPage() {
             {list.map((s) => (
               <li key={s.id} className="border-b border-rule">
                 <Link href={`/series/${s.slug}`} className="group grid gap-6 py-10 lg:grid-cols-12 lg:gap-6">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-ink-100 lg:col-span-4">
+                  <div className="relative aspect-video overflow-hidden bg-ink-100 lg:col-span-4">
                     <GeneratedCover seed={`series:${s.slug}`} className="absolute inset-0 h-full w-full" />
                   </div>
                   <div className="flex flex-col justify-center lg:col-span-7 lg:col-start-6">

@@ -72,7 +72,7 @@ export default async function SeriesPage({ params }: Params) {
                   <ArticleCover
                     post={p}
                     sizes="(max-width: 640px) 100vw, 25vw"
-                    className="aspect-[16/10] sm:col-span-3"
+                    className="aspect-video sm:col-span-3"
                   />
                   <div className="sm:col-span-7 sm:col-start-6 sm:self-center">
                     {p.categoryName && <span className="kicker text-ink-500">{p.categoryName}</span>}

@@ -93,7 +93,7 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
           post={post}
           priority
           sizes="(max-width: 1440px) 100vw, 1440px"
-          className="mt-6 aspect-[4/3] sm:aspect-[21/9]"
+          className="mt-6 aspect-video"
         />
       </Container>
 
@@ -179,7 +179,7 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
               <ArticleCover
                 post={next}
                 sizes="(max-width: 640px) 100vw, 33vw"
-                className="aspect-[4/3] sm:col-span-4"
+                className="aspect-video sm:col-span-4"
               />
               <div className="sm:col-span-7 sm:col-start-6 sm:self-center">
                 {next.categoryName && <span className="kicker text-ink-500">{next.categoryName}</span>}
