@@ -21,3 +21,4 @@ coverage
 # drizzle
 packages/db/drizzle/meta/_journal.json.bak
 .env.production
+.playwright-mcp/
