@@ -119,7 +119,7 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
       {/* Body */}
       <Container size="prose">
         <div
-          className="prose-editorial mt-12 [&_a]:text-cyan-ink [&_a]:underline [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-ink-900 [&_p]:mt-6"
+          className="prose-editorial mt-12 [&_a]:text-cyan-ink [&_a]:underline [&_h2]:mt-14 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-ink-900 [&_h2+p]:mt-4 [&_p]:mt-[1.05em]"
           dangerouslySetInnerHTML={{ __html: body }}
         />
       </Container>
