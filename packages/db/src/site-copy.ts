@@ -53,7 +53,7 @@ export const SITE_COPY_FIELDS = [
     label: "Introduction paragraph",
     kind: "textarea",
     default:
-      "I'm a software engineer and engineering leader with more than a decade of experience building products, platforms and teams. My work spans distributed systems, APIs, cloud infrastructure and AI — turning ambitious ideas into software that works in production and keeps working as the business grows. I'm also a Christian. Alongside the engineering, I write about following Jesus in ordinary working life — two sides of one person, kept side by side here.",
+      "I'm Olugbenga. I build software and lead the people who build it, and I've done that for more than a decade. I follow Jesus, and I try to lead the same way in church as I do at work. This is where I write about both, side by side.",
   },
   {
     key: "hero.now",
