@@ -119,4 +119,57 @@
   line-height: 1.7;
   color: var(--color-ink-900);
   max-width: var(--spacing-measure);
+
+  /* Quotations (scripture, citations) step into the serif so they read as a different voice. */
+  & blockquote {
+    margin: 2rem 0;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--color-ink-900);
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-700);
+  }
+  & blockquote p {
+    margin-top: 0;
+  }
+  & blockquote p + p {
+    margin-top: 0.75em;
+  }
+  & h3 {
+    margin-top: 2rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-ink-900);
+  }
+  & ul,
+  & ol {
+    margin-top: 1.5rem;
+    padding-left: 1.25rem;
+  }
+  & ul {
+    list-style: disc;
+  }
+  & ol {
+    list-style: decimal;
+  }
+  & li + li {
+    margin-top: 0.5rem;
+  }
+  & hr {
+    margin: 3rem 0;
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+  }
+  & strong {
+    font-weight: 600;
+    color: var(--color-ink-900);
+  }
+  & code {
+    font-size: 0.9em;
+    padding: 0.1em 0.35em;
+    background: var(--color-ink-100);
+  }
 }
