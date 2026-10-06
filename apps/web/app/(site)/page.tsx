@@ -40,8 +40,7 @@ export default async function HomePage() {
     getSiteCopy(),
   ]);
   const headline = copyLines(copy["hero.headline"]);
-  const now = copyLines(copy["hero.now"]);
-  const openTo = copyLines(copy["hero.open_to"]);
+  const verse = copy["hero.verse"].trim();
 
   return (
     <>
@@ -84,21 +83,15 @@ export default async function HomePage() {
               {copy["hero.intro"] && (
                 <p className="text-lg leading-[1.55] text-ink-700 lg:col-span-5">{copy["hero.intro"]}</p>
               )}
-              {now.length > 0 && (
-                <div className="flex flex-col gap-1 text-sm text-ink-500 lg:col-span-3 lg:col-start-7">
-                  <span className="font-semibold text-ink-900">Now</span>
-                  {now.map((line) => (
-                    <span key={line}>{line}</span>
-                  ))}
-                </div>
-              )}
-              {openTo.length > 0 && (
-                <div className="flex flex-col gap-1 text-sm text-ink-500 lg:col-span-3 lg:col-start-10">
-                  <span className="font-semibold text-ink-900">Open to</span>
-                  {openTo.map((line) => (
-                    <span key={line}>{line}</span>
-                  ))}
-                </div>
+              {verse && (
+                <blockquote className="lg:col-span-5 lg:col-start-8">
+                  <p className="font-serif text-[1.65rem] leading-[1.25] tracking-[-0.01em] text-ink-700">
+                    “{verse}”
+                  </p>
+                  {copy["hero.verseRef"] && (
+                    <cite className="mt-3 block text-sm not-italic text-ink-500">{copy["hero.verseRef"]}</cite>
+                  )}
+                </blockquote>
               )}
             </div>
           </div>
