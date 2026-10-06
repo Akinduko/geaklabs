@@ -28,7 +28,7 @@ export function sanitizeArticleHtml(html: string): string {
  * up to two long, fully-bold paragraphs become pull quotes. Short bold lines
  * ("Wait.") are left alone so a run of them doesn't stack into a wall of quotes.
  */
-export function decorateArticleHtml(html: string, { maxPulls = 2, minLength = 60 } = {}): string {
+export function decorateArticleHtml(html: string, { maxPulls = 2, minLength = 30 } = {}): string {
   let pulls = 0;
   return html.replace(/<p><strong>([^<]+)<\/strong><\/p>/g, (match, text: string) => {
     if (pulls >= maxPulls || text.trim().length < minLength) return match;
