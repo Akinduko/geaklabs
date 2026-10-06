@@ -80,6 +80,7 @@ export async function getAllSeries() {
       name: series.name,
       slug: series.slug,
       description: series.description,
+      coverImageUrl: series.coverImageUrl,
       sortOrder: series.sortOrder,
       partCount: sql<number>`count(${posts.id}) filter (where ${posts.status} = 'published')`.mapWith(Number),
     })

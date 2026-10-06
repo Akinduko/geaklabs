@@ -351,6 +351,7 @@ export async function saveSeries(id: string | null, fd: FormData) {
     name,
     slug,
     description: str(fd, "description") || null,
+    coverImageUrl: str(fd, "coverImageUrl") || null,
     sortOrder: Number(str(fd, "sortOrder")) || 0,
   };
 

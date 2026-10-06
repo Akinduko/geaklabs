@@ -51,6 +51,7 @@ export const series = pgTable("series", {
   name: varchar("name", { length: 120 }).notNull(),
   slug: varchar("slug", { length: 120 }).notNull().unique(),
   description: text("description"),
+  coverImageUrl: text("cover_image_url"),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

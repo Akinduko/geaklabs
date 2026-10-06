@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@geaklabs/ui";
 import { getAllSeries, getSiteCopy } from "@geaklabs/db";
-import { GeneratedCover } from "../_components/generated-cover";
+import { ArticleCover } from "../_components/article-cover";
 
 export const revalidate = 60;
 
@@ -38,9 +38,11 @@ export default async function SeriesIndexPage() {
             {list.map((s) => (
               <li key={s.id} className="border-b border-rule">
                 <Link href={`/series/${s.slug}`} className="group grid gap-6 py-10 lg:grid-cols-12 lg:gap-6">
-                  <div className="relative aspect-video overflow-hidden bg-ink-100 lg:col-span-4">
-                    <GeneratedCover seed={`series:${s.slug}`} className="absolute inset-0 h-full w-full" />
-                  </div>
+                  <ArticleCover
+                    post={{ slug: `series:${s.slug}`, title: s.name, coverImageUrl: s.coverImageUrl, coverImageAlt: s.name }}
+                    sizes="(max-width: 1024px) 100vw, 33vw"
+                    className="aspect-video lg:col-span-4"
+                  />
                   <div className="flex flex-col justify-center lg:col-span-7 lg:col-start-6">
                     <h2 className="font-serif text-[clamp(2rem,3.6vw,3.25rem)] leading-[1] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
                       {s.name}

@@ -50,6 +50,13 @@
       "when": 1791324731497,
       "tag": "0006_chief_smasher",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791328371421,
+      "tag": "0007_stiff_beast",
+      "breakpoints": true
     }
   ]
 }

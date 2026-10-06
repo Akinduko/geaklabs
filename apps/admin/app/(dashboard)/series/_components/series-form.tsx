@@ -43,6 +43,18 @@ export function SeriesForm({
         Shown under the heading on the series page, and used as its search description.
       </p>
 
+      <Field label="Cover image URL (optional)">
+        <input
+          name="coverImageUrl"
+          defaultValue={series?.coverImageUrl ?? ""}
+          className="input"
+          placeholder="https://…/cover.jpg"
+        />
+      </Field>
+      <p className="-mt-3 font-display text-xs text-ink-400">
+        Shown on the series index. Leave empty for generated artwork.
+      </p>
+
       <Field label="Sort order (lower = first)">
         <input name="sortOrder" type="number" defaultValue={series?.sortOrder ?? 0} className="input" />
       </Field>
