@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
     type: "website",
     siteName: "GEAK LABS",
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", site: "@geaky6", creator: "@geaky6" },
   robots: {
     index: true,
     follow: true,
