@@ -8,7 +8,7 @@ import { generatedCoverSvg } from "./generated-cover";
  * otherwise the post's generated art carries the title.
  */
 export const OG_SIZE = { width: 1200, height: 630 };
-export const OG_CONTENT_TYPE = "image/png";
+export const OG_CONTENT_TYPE = "image/jpeg";
 
 let serif: ArrayBuffer | null = null;
 
@@ -33,12 +33,51 @@ async function loadSerif(): Promise<ArrayBuffer | null> {
   return null;
 }
 
+/** WhatsApp drops og:image above ~300 KB; keep well under it. */
+const MAX_BYTES = 280_000;
+
+async function toJpegUnder(input: Buffer | ArrayBuffer): Promise<Buffer> {
+  const sharp = (await import("sharp")).default;
+  const src = Buffer.isBuffer(input) ? input : Buffer.from(input);
+  for (const quality of [82, 74, 66, 58, 50]) {
+    const out = await sharp(src).jpeg({ quality, mozjpeg: true }).toBuffer();
+    if (out.length <= MAX_BYTES) return out;
+  }
+  return sharp(src).jpeg({ quality: 45, mozjpeg: true }).toBuffer();
+}
+
+function jpegResponse(buf: Buffer) {
+  return new Response(new Uint8Array(buf), {
+    headers: {
+      "content-type": "image/jpeg",
+      "content-length": String(buf.length),
+      "cache-control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
+    },
+  });
+}
+
+/**
+ * The social card for a post or series, as a 1200×630 JPEG under 300 KB.
+ * An uploaded cover is letterboxed onto the card (sharp); otherwise the generated art
+ * carries the title (satori → PNG → JPEG).
+ */
 export async function socialCard(args: Parameters<typeof socialCardInner>[0]) {
   try {
-    const res = await socialCardInner(args);
-    // Force the body to render now so a satori error surfaces here rather than mid-stream.
-    const buf = await res.arrayBuffer();
-    return new Response(buf, { headers: { "content-type": "image/png" } });
+    if (args.coverImageUrl) {
+      const sharp = (await import("sharp")).default;
+      const res = await fetch(args.coverImageUrl, { next: { revalidate: 3600 } });
+      if (res.ok) {
+        const cover = Buffer.from(await res.arrayBuffer());
+        const png = await sharp(cover)
+          .resize(OG_SIZE.width, OG_SIZE.height, { fit: "contain", background: "#0b1220" })
+          .png()
+          .toBuffer();
+        return jpegResponse(await toJpegUnder(png));
+      }
+      // Cover unreachable: fall through to the generated card.
+    }
+    const rendered = await socialCardInner({ ...args, coverImageUrl: null });
+    return jpegResponse(await toJpegUnder(await rendered.arrayBuffer()));
   } catch (err) {
     console.error("[socialCard]", err);
     throw err;
@@ -61,27 +100,6 @@ async function socialCardInner({
   const font = await loadSerif();
   const fonts = font ? [{ name: "Instrument Serif", data: font, style: "normal" as const, weight: 400 as const }] : undefined;
   const family = font ? "Instrument Serif" : undefined;
-
-  if (coverImageUrl) {
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#0b1220",
-          }}
-        >
-          {/* 16:9 artwork fits the 1.9:1 card with thin bars rather than losing its top and bottom. */}
-          <img src={coverImageUrl} width={1120} height={630} style={{ objectFit: "contain" }} />
-        </div>
-      ),
-      { ...OG_SIZE, fonts },
-    );
-  }
 
   const art = `data:image/svg+xml;base64,${Buffer.from(generatedCoverSvg({ seed, section })).toString("base64")}`;
   const big = title.length > 48;
