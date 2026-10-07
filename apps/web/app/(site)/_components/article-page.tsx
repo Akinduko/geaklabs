@@ -15,6 +15,7 @@ import {
 import { ArticleCard } from "./article-card";
 import { ArticleCover } from "./article-cover";
 import { JsonLd } from "./json-ld";
+import { PostAnalytics } from "./analytics";
 import { formatDate } from "@/lib/format";
 import { sanitizeArticleHtml, decorateArticleHtml } from "@/lib/sanitize";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
@@ -79,6 +80,17 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
 
   return (
     <article className="pb-8">
+      <PostAnalytics
+        post={{
+          slug: post.slug,
+          title: post.title,
+          section: post.section,
+          category: post.category?.name ?? null,
+          series: post.series?.name ?? null,
+          seriesPart: post.seriesPart ?? null,
+          readingMinutes: post.readingMinutes,
+        }}
+      />
       <JsonLd data={articleJsonLd({ ...post, categoryName: post.category?.name ?? null })} />
       <JsonLd
         data={breadcrumbJsonLd([
@@ -144,6 +156,7 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
           className="prose-editorial mt-12 [&_a]:text-cyan-ink [&_a]:underline [&_h2]:mt-14 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-ink-900 [&_h2+p]:mt-4 [&_p]:mt-[1.05em]"
           dangerouslySetInnerHTML={{ __html: body }}
         />
+        <div id="post-end" aria-hidden />
       </Container>
 
       {/* Series navigation replaces the generic Next teaser for a post in a series */}
@@ -157,7 +170,15 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
                 { label: "Next part", part: nextPart },
               ].map(({ label, part }) =>
                 part ? (
-                  <Link key={label} href={postHref(part)} className="group flex flex-col">
+                  <Link
+                    key={label}
+                    href={postHref(part)}
+                    className="group flex flex-col"
+                    data-track="series_navigate"
+                    data-track-direction={label === "Next part" ? "next" : "previous"}
+                    data-track-series={post.series?.slug}
+                    data-track-to={part.slug}
+                  >
                     <span className="text-sm text-ink-500">{label}</span>
                     <span className="mt-2 font-serif text-[clamp(1.6rem,2.6vw,2.25rem)] leading-[1.05] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
                       {part.title}
@@ -177,7 +198,7 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
         <Container size="wide">
           <section className="mt-20 border-t border-ink-900 pt-8">
             <span className="kicker text-ink-500">{section === "journal" ? "Earlier" : "Next"}</span>
-            <Link href={postHref(next)} className="group mt-6 grid gap-6 pb-12 sm:grid-cols-12">
+            <Link href={postHref(next)} className="group mt-6 grid gap-6 pb-12 sm:grid-cols-12" data-track="next_post_click" data-track-from={post.slug} data-track-to={next.slug}>
               {section !== "journal" && (
                 <ArticleCover
                   post={next}

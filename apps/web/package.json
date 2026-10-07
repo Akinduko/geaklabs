@@ -14,6 +14,7 @@
     "@geaklabs/db": "workspace:*",
     "@geaklabs/ui": "workspace:*",
     "next": "15.3.9",
+    "posthog-js": "^1.438.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sanitize-html": "^2.14.0",

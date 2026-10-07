@@ -38,11 +38,13 @@ export async function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className="text-ink-900 transition-colors hover:text-cyan-ink"
+                data-track="nav_click"
+                data-track-item={item.label}
               >
                 {item.label}
               </Link>
             ))}
-            <Link href="/#contact" className="text-cyan-ink transition-colors hover:text-ink-900">
+            <Link href="/#contact" className="text-cyan-ink transition-colors hover:text-ink-900" data-track="nav_click" data-track-item="Contact">
               Contact
             </Link>
           </nav>

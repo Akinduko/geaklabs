@@ -141,7 +141,7 @@ export default async function HomePage() {
               </div>
               <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:col-span-7 lg:col-start-6">
                 {posts.map((post) => (
-                  <Link key={post.slug} href={postHref(post)} className="group block">
+                  <Link key={post.slug} href={postHref(post)} className="group block" data-track="home_post_click" data-track-block="notes" data-track-to={post.slug}>
                     {post.categoryName && (
                       <span className="kicker text-ink-500">{post.categoryName}</span>
                     )}
@@ -176,7 +176,7 @@ export default async function HomePage() {
               <ul className="divide-y divide-rule border-y border-rule lg:col-span-7 lg:col-start-6">
                 {faithPosts.map((post) => (
                   <li key={post.slug}>
-                    <Link href={postHref(post)} className="group flex flex-col gap-1.5 py-5">
+                    <Link href={postHref(post)} className="group flex flex-col gap-1.5 py-5" data-track="home_post_click" data-track-block="faith" data-track-to={post.slug}>
                       <span className="text-xl font-medium leading-[1.25] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
                         {post.title}
                       </span>
@@ -212,7 +212,7 @@ export default async function HomePage() {
               <ul className="divide-y divide-rule border-y border-rule lg:col-span-7 lg:col-start-6">
                 {journalEntries.map((entry) => (
                   <li key={entry.slug}>
-                    <Link href={postHref(entry)} className="group grid gap-1 py-5 sm:grid-cols-[160px_1fr] sm:gap-6">
+                    <Link href={postHref(entry)} className="group grid gap-1 py-5 sm:grid-cols-[160px_1fr] sm:gap-6" data-track="home_post_click" data-track-block="journal" data-track-to={entry.slug}>
                       <span className="font-serif text-lg leading-tight text-ink-500">{formatDate(entry.publishedAt)}</span>
                       <span className="text-xl font-medium leading-[1.25] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
                         {entry.title}

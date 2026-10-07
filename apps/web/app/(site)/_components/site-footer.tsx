@@ -51,6 +51,8 @@ export async function SiteFooter() {
               <a
                 href={`mailto:${email}`}
                 className="mt-5 inline-block border-b border-ink-900 text-xl font-medium tracking-[-0.01em] text-ink-900 transition-colors hover:border-cyan-ink hover:text-cyan-ink"
+                data-track="contact_click"
+                data-track-channel="email"
               >
                 {email}
               </a>
@@ -64,7 +66,12 @@ export async function SiteFooter() {
               <div key={g.title} className="flex flex-col gap-2 text-sm">
                 <span className="font-semibold text-ink-900">{g.title}</span>
                 {g.links.map((l) => (
-                  <FooterLink key={l.href} href={l.href} external={"external" in l && l.external}>
+                  <FooterLink
+                    key={l.href}
+                    href={l.href}
+                    external={"external" in l && l.external}
+                    track={g.title === "Subscribe" ? "feed_click" : g.title === "Elsewhere" ? "social_click" : "footer_nav_click"}
+                  >
                     {l.label}
                   </FooterLink>
                 ))}
@@ -83,22 +90,24 @@ export async function SiteFooter() {
 function FooterLink({
   href,
   external,
+  track,
   children,
 }: {
   href: string;
   external?: boolean;
+  track?: string;
   children: React.ReactNode;
 }) {
   const cls = "text-ink-700 transition-colors hover:text-cyan-ink";
   if (external) {
     return (
-      <a href={href} className={cls} target="_blank" rel="noopener noreferrer">
+      <a href={href} className={cls} target="_blank" rel="noopener noreferrer" data-track={track}>
         {children}
       </a>
     );
   }
   return (
-    <Link href={href} className={cls}>
+    <Link href={href} className={cls} data-track={track}>
       {children}
     </Link>
   );
