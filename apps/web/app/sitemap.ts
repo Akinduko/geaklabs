@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const newestPost = posts[0]?.publishedAt ?? new Date();
   const newestFaith = posts.find((p) => p.section === "faith")?.publishedAt ?? newestPost;
+  const newestJournal = posts.find((p) => p.section === "journal")?.publishedAt ?? newestPost;
 
   return [
     { url: SITE_URL, lastModified: newestPost, changeFrequency: "weekly", priority: 1 },
@@ -31,6 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: newestFaith,
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/journal`,
+      lastModified: newestJournal,
+      changeFrequency: "weekly",
+      priority: 0.8,
     },
     { url: `${SITE_URL}/work`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     { url: `${SITE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },

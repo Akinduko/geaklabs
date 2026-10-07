@@ -19,7 +19,7 @@ export async function GET() {
   ]);
   const seriesList = allSeries.filter((s) => s.partCount > 0);
 
-  const listPosts = (section: "professional" | "faith") =>
+  const listPosts = (section: "professional" | "faith" | "journal") =>
     posts
       .filter((p) => p.section === section)
       .slice(0, 50)
@@ -61,6 +61,12 @@ ${copy["faith.intro"]}
 
 ${listPosts("faith") || "_Nothing published yet._"}
 
+## Journal
+
+${copy["journal.intro"]}
+
+${listPosts("journal") || "_Nothing written yet._"}
+
 ${seriesList.length > 0 ? `## Series
 
 ${seriesList.map((s) => `- [${s.name}](${SITE_URL}/series/${s.slug})${s.description ? `: ${s.description}` : ""} (${s.partCount} parts)`).join("\n")}
@@ -71,10 +77,12 @@ ${seriesList.map((s) => `- [${s.name}](${SITE_URL}/series/${s.slug})${s.descript
 - [Work](${SITE_URL}/work): every published project
 - [Notes](${SITE_URL}/articles): every published professional note
 - [Faith](${SITE_URL}/faith): every published faith article
+- [Journal](${SITE_URL}/journal): a dated log of ordinary life
 - [Series](${SITE_URL}/series): longer threads read in order, from both sections
 - [About](${SITE_URL}/about): background and experience
 - [RSS feed — professional](${SITE_URL}/rss.xml)
 - [RSS feed — faith](${SITE_URL}/faith/rss.xml)
+- [RSS feed — journal](${SITE_URL}/journal/rss.xml)
 
 ## Contact
 

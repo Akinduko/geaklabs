@@ -187,6 +187,45 @@ export const SITE_COPY_FIELDS = [
     default: "GEAK LABS — Faith",
   },
 
+  // ---- Journal ----
+  {
+    key: "journal.title",
+    group: "Journal",
+    label: "Page heading",
+    kind: "text",
+    default: "Journal",
+  },
+  {
+    key: "journal.intro",
+    group: "Journal",
+    label: "Introduction under the heading",
+    kind: "textarea",
+    default:
+      "Days, places, people and what they taught me — notes from ordinary life, written as it happens.",
+  },
+  {
+    key: "journal.heading",
+    group: "Journal",
+    label: "Home-page block heading",
+    kind: "textarea",
+    hint: "The block only shows once a journal entry is published.",
+    default: "Lately.",
+  },
+  {
+    key: "journal.metaDescription",
+    group: "Journal",
+    label: "Search description for the journal",
+    kind: "textarea",
+    default: "A journal by Olugbenga Akinduko — days, places, people and what they taught me.",
+  },
+  {
+    key: "journal.rssTitle",
+    group: "Journal",
+    label: "RSS feed title",
+    kind: "text",
+    default: "GEAK LABS — Journal",
+  },
+
   // ---- Series ----
   {
     key: "series.intro",

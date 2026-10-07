@@ -14,12 +14,13 @@ import {
 export const contentStatus = pgEnum("content_status", ["draft", "published"]);
 
 /**
- * Which side of the site a post (or category) belongs to. Professional notes live
- * under /articles; faith writing under /faith. Set on the post itself so a post can
- * never leak into the wrong feed just because it has no category.
+ * Which part of the site a post (or category) belongs to. Professional notes live
+ * under /articles, faith writing under /faith, and the journal (life, days, experience)
+ * under /journal. Set on the post itself so a post can never leak into the wrong feed
+ * just because it has no category.
  */
-export const contentSection = pgEnum("content_section", ["professional", "faith"]);
-export const CONTENT_SECTIONS = ["professional", "faith"] as const;
+export const contentSection = pgEnum("content_section", ["professional", "faith", "journal"]);
+export const CONTENT_SECTIONS = ["professional", "faith", "journal"] as const;
 export type ContentSection = (typeof CONTENT_SECTIONS)[number];
 
 /** Single admin (extendable to multi-user later). */

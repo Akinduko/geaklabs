@@ -38,7 +38,9 @@ function section(fd: FormData): ContentSection {
 
 /** Listing + feed paths that show a post, by section. */
 function sectionPaths(s: ContentSection) {
-  return s === "faith" ? ["/faith", "/faith/rss.xml"] : ["/articles", "/rss.xml"];
+  if (s === "faith") return ["/faith", "/faith/rss.xml"];
+  if (s === "journal") return ["/journal", "/journal/rss.xml"];
+  return ["/articles", "/rss.xml"];
 }
 
 /* ----------------------------- Posts ----------------------------- */
@@ -263,7 +265,7 @@ export async function saveSiteCopy(fd: FormData) {
   }
 
   revalidatePath("/copy");
-  await revalidateWeb(["/", "/about", "/work", "/articles", "/faith", "/rss.xml", "/faith/rss.xml"]);
+  await revalidateWeb(["/", "/about", "/work", "/articles", "/faith", "/journal", "/rss.xml", "/faith/rss.xml", "/journal/rss.xml"]);
   redirect("/copy?saved=1");
 }
 

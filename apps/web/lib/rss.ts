@@ -15,7 +15,9 @@ export async function buildFeed(section: ContentSection) {
   const channel =
     section === "faith"
       ? { title: copy["faith.rssTitle"], link: `${SITE_URL}/faith`, description: copy["faith.metaDescription"] }
-      : { title: "GEAK LABS — Notes", link: `${SITE_URL}/articles`, description: copy["articles.intro"] };
+      : section === "journal"
+        ? { title: copy["journal.rssTitle"], link: `${SITE_URL}/journal`, description: copy["journal.metaDescription"] }
+        : { title: "GEAK LABS — Notes", link: `${SITE_URL}/articles`, description: copy["articles.intro"] };
 
   const items = posts
     .map((p) => {

@@ -11,6 +11,7 @@ import {
 import { JsonLd } from "./_components/json-ld";
 import { siteJsonLd } from "@/lib/seo";
 import { postHref } from "@/lib/sections";
+import { formatDate } from "@/lib/format";
 
 export const revalidate = 60;
 
@@ -25,6 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
         "application/rss+xml": [
           { url: "/rss.xml", title: "GEAK LABS — Notes" },
           { url: "/faith/rss.xml", title: copy["faith.rssTitle"] },
+          { url: "/journal/rss.xml", title: copy["journal.rssTitle"] },
         ],
       },
     },
@@ -32,9 +34,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [posts, faithPosts, faithTopics, services, copy] = await Promise.all([
+  const [posts, faithPosts, journalEntries, faithTopics, services, copy] = await Promise.all([
     getPublishedPosts(4, "professional"),
     getPublishedPosts(3, "faith"),
+    getPublishedPosts(3, "journal"),
     getAllCategories("faith"),
     getServices(),
     getSiteCopy(),
@@ -180,6 +183,40 @@ export default async function HomePage() {
                       {post.excerpt && (
                         <span className="text-[15px] leading-normal text-ink-700">{post.excerpt}</span>
                       )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* Journal — latest entries as a dated list, only once something is written */}
+      {journalEntries.length > 0 && (
+        <section className="border-t border-rule">
+          <Container size="wide">
+            <div className="grid gap-8 py-16 lg:grid-cols-12 lg:gap-6">
+              <div className="lg:col-span-4">
+                <span className="kicker text-ink-500">Journal</span>
+                <h2 className="mt-5 max-w-[360px] text-3xl font-semibold leading-[1.05] tracking-[-0.03em] text-ink-900">
+                  {copy["journal.heading"]}
+                </h2>
+                <Link
+                  href="/journal"
+                  className="mt-6 inline-block border-b border-ink-900 pb-0.5 text-sm font-medium text-ink-900 transition-colors hover:border-cyan-ink hover:text-cyan-ink"
+                >
+                  All entries
+                </Link>
+              </div>
+              <ul className="divide-y divide-rule border-y border-rule lg:col-span-7 lg:col-start-6">
+                {journalEntries.map((entry) => (
+                  <li key={entry.slug}>
+                    <Link href={postHref(entry)} className="group grid gap-1 py-5 sm:grid-cols-[160px_1fr] sm:gap-6">
+                      <span className="font-serif text-lg leading-tight text-ink-500">{formatDate(entry.publishedAt)}</span>
+                      <span className="text-xl font-medium leading-[1.25] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
+                        {entry.title}
+                      </span>
                     </Link>
                   </li>
                 ))}

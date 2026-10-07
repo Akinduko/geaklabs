@@ -87,15 +87,17 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
           { name: post.title, path: postHref(post) },
         ])}
       />
-      {/* Cover — uploaded photo or generated art, full width */}
-      <Container size="wide">
-        <ArticleCover
-          post={post}
-          priority
-          sizes="(max-width: 1440px) 100vw, 1440px"
-          className="mt-6 aspect-video"
-        />
-      </Container>
+      {/* Cover — uploaded photo or generated art, full width. Journal entries read as a log, so no hero. */}
+      {section !== "journal" && (
+        <Container size="wide">
+          <ArticleCover
+            post={post}
+            priority
+            sizes="(max-width: 1440px) 100vw, 1440px"
+            className="mt-6 aspect-video"
+          />
+        </Container>
+      )}
 
       {/* Article header */}
       <Container size="prose">
@@ -105,7 +107,7 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
               {post.category.name}
             </Link>
           ) : (
-            <span className="kicker text-ink-500">{section === "faith" ? "Faith" : "Note"}</span>
+            <span className="kicker text-ink-500">{section === "professional" ? "Note" : home.label}</span>
           )}
           <h1 className="mt-5 font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.95] tracking-[-0.03em] text-ink-900">
             {post.title}
@@ -174,14 +176,16 @@ export async function ArticlePage({ params, section }: ArticleParams & { section
       {!post.series && next && (
         <Container size="wide">
           <section className="mt-20 border-t border-ink-900 pt-8">
-            <span className="kicker text-ink-500">Next</span>
+            <span className="kicker text-ink-500">{section === "journal" ? "Earlier" : "Next"}</span>
             <Link href={postHref(next)} className="group mt-6 grid gap-6 pb-12 sm:grid-cols-12">
-              <ArticleCover
-                post={next}
-                sizes="(max-width: 640px) 100vw, 33vw"
-                className="aspect-video sm:col-span-4"
-              />
-              <div className="sm:col-span-7 sm:col-start-6 sm:self-center">
+              {section !== "journal" && (
+                <ArticleCover
+                  post={next}
+                  sizes="(max-width: 640px) 100vw, 33vw"
+                  className="aspect-video sm:col-span-4"
+                />
+              )}
+              <div className={section === "journal" ? "sm:col-span-9" : "sm:col-span-7 sm:col-start-6 sm:self-center"}>
                 {next.categoryName && <span className="kicker text-ink-500">{next.categoryName}</span>}
                 <span className="mt-3 block font-serif text-[clamp(1.75rem,3vw,2.75rem)] leading-[1.02] tracking-[-0.02em] text-ink-900 transition-colors group-hover:text-cyan-ink">
                   {next.title}

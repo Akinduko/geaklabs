@@ -7,7 +7,7 @@ export async function SiteHeader() {
   const nav = [
     { href: "/articles", label: "Notes" },
     { href: "/faith", label: copy["nav.faith"] || "Faith" },
-    { href: "/series", label: "Series" },
+    { href: "/journal", label: "Journal" },
     { href: "/about", label: "About" },
   ];
 

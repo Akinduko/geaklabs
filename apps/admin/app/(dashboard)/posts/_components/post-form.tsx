@@ -8,6 +8,7 @@ import type { Post, Category, ContentSection } from "@geaklabs/db";
 const SECTION_LABELS: Record<ContentSection, string> = {
   professional: "Professional",
   faith: "Faith",
+  journal: "Journal",
 };
 
 export function PostForm({
@@ -55,7 +56,8 @@ export function PostForm({
           ))}
         </div>
         <p className="mt-1.5 font-display text-xs text-ink-400">
-          Professional posts appear under /articles; faith posts under /faith. Each has its own feed.
+          Professional posts appear under /articles, faith posts under /faith, journal entries under
+          /journal. Each has its own feed. Journal entries show no cover and list by date.
         </p>
       </fieldset>
 

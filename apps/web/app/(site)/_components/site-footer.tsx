@@ -16,6 +16,7 @@ export async function SiteFooter() {
       links: [
         { href: "/articles", label: "Notes" },
         { href: "/faith", label: faith },
+        { href: "/journal", label: "Journal" },
         { href: "/series", label: "Series" },
         { href: "/work", label: "Work" },
         { href: "/about", label: "About" },
@@ -26,6 +27,7 @@ export async function SiteFooter() {
       links: [
         { href: "/rss.xml", label: "Notes feed" },
         { href: "/faith/rss.xml", label: `${faith} feed` },
+        { href: "/journal/rss.xml", label: "Journal feed" },
       ],
     },
     {

@@ -20,6 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "application/rss+xml": [
         { url: "/rss.xml", title: "GEAK LABS — Notes" },
         { url: "/faith/rss.xml", title: copy["faith.rssTitle"] },
+        { url: "/journal/rss.xml", title: copy["journal.rssTitle"] },
       ],
     },
   },

@@ -6,7 +6,11 @@ import { deletePost } from "@/lib/actions";
 
 export const dynamic = "force-dynamic";
 
-const SECTION_LABELS: Record<ContentSection, string> = { professional: "Professional", faith: "Faith" };
+const SECTION_LABELS: Record<ContentSection, string> = {
+  professional: "Professional",
+  faith: "Faith",
+  journal: "Journal",
+};
 
 export default async function PostsPage({
   searchParams,
