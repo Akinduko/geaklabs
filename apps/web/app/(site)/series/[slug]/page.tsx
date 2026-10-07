@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: s.name,
     description: s.description ?? undefined,
     alternates: { canonical: `/series/${slug}` },
+    openGraph: { type: "website", siteName: "GEAK LABS", url: `/series/${slug}`, title: s.name, description: s.description ?? undefined },
   };
 }
 

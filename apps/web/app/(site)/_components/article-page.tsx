@@ -44,11 +44,11 @@ export async function articleMetadata(
       title: post.title,
       description: post.excerpt ?? undefined,
       type: "article",
+      siteName: "GEAK LABS",
       url: href,
       publishedTime: post.publishedAt ? new Date(post.publishedAt).toISOString() : undefined,
       authors: ["Olugbenga Akinduko"],
       section: post.category?.name ?? SECTIONS[section].label,
-      images: [post.coverImageUrl ?? "/opengraph-image"],
     },
   };
 }

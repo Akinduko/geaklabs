@@ -42,9 +42,8 @@ export async function generateMetadata(): Promise<Metadata> {
   openGraph: {
     type: "website",
     siteName: "GEAK LABS",
-    url: SITE_URL,
   },
-  twitter: { card: "summary_large_image", creator: "@geaklabs" },
+  twitter: { card: "summary_large_image" },
   robots: {
     index: true,
     follow: true,

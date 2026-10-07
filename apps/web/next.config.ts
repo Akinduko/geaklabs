@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["@geaklabs/ui"],
   },
+  // The social-card renderer reads the bundled serif from disk; make sure it ships with the functions.
+  outputFileTracingIncludes: {
+    "/**": ["./assets/fonts/**/*"],
+  },
 };
 
 export default nextConfig;
